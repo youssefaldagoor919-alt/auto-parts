@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر قطع غيار أوروبي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@300;400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-black: #0d0d0d;
+            --secondary-black: #1a1a1a;
+            --gold: #d4a574;
+            --gold-light: #e8c4a0;
+            --gold-dark: #b8936a;
+            --text-light: #f5f5f5;
+            --text-muted: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--primary-black);
+            color: var(--text-light);
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-size: 17px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background: linear-gradient(180deg, var(--secondary-black) 0%, rgba(26, 26, 26, 0.95) 100%);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(212, 165, 116, 0.2);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-svg {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 0 10px rgba(212, 165, 116, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo-svg:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        .brand-name {
+            font-family: 'Amiri', serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 10px rgba(212, 165, 116, 0.3);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 50px 14px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 165, 116, 0.3);
+            border-radius: 30px;
+            color: var(--text-light);
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(212, 165, 116, 0.2);
+        }
+
+        .search-box::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 20px;
+            pointer-events: none;
+        }
+
+        .whatsapp-btn {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--primary-black);
+            padding: 14px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+            white-space: nowrap;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(212, 165, 116, 0.5);
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--secondary-black) 0%, var(--primary-black) 100%);
+            padding: 80px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(212, 165, 116, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(212, 165, 116, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Amiri', serif;
+            font-size: clamp(42px, 7vw, 78px);
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--gold-light), var(--gold-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 3vw, 26px);
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .hero-divider {
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            margin: 30px auto;
+        }
+
+        /* Products Section */
+        .products {
+            max-width: 1400px;
+            margin: 60px auto;
+            padding: 0 30px;
+        }
+
+        .section-title {
+            font-family: 'Amiri', serif;
+            font-size: clamp(36px, 6vw, 56px);
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--gold);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--gold);
+            margin: 20px auto 0;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, var(--secondary-black), rgba(26, 26, 26, 0.8));
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(212, 165, 116, 0.15);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(212, 165, 116, 0.2);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--gold);
+            color: var(--primary-black);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Image Slider */
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            background: var(--primary-black);
+            aspect-ratio: 4/3;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slide {
+            min-width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+        }
+
+        .slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(212, 165, 116, 0.9);
+            color: var(--primary-black);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+
+        .slider-btn:hover {
+            background: var(--gold-light);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .slider-btn.prev {
+            right: 15px;
+        }
+
+        .slider-btn.next {
+            left: 15px;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(212, 165, 116, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--gold);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Product Info */
+        .product-info {
+            padding: 30px;
+        }
+
+        .product-brand {
+            display: inline-block;
+            background: rgba(212, 165, 116, 0.15);
+            color: var(--gold);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border: 1px solid rgba(212, 165, 116, 0.3);
+        }
+
+        .product-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-light);
+            line-height: 1.4;
+        }
+
+        .product-model {
+            color: var(--text-muted);
+            font-size: 17px;
+            margin-bottom: 20px;
+        }
+
+        .product-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .feature-tag {
+            background: rgba(212, 165, 116, 0.1);
+            color: var(--gold-light);
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 14px;
+            border: 1px solid rgba(212, 165, 116, 0.2);
+        }
+
+        .product-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--primary-black);
+            padding: 18px 30px;
+            border: none;
+            border-radius: 30px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .product-btn:hover {
+            background: linear-gradient(135deg, var(--gold-light), var(--gold));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 165, 116, 0.3);
+        }
+
+        /* Features Section */
+        .features {
+            background: linear-gradient(135deg, var(--secondary-black), var(--primary-black));
+            padding: 80px 30px;
+            margin-top: 80px;
+        }
+
+        .features-grid {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-box {
+            text-align: center;
+            padding: 40px 30px;
+            background: rgba(212, 165, 116, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(212, 165, 116, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(212, 165, 116, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .feature-text {
+            color: var(--text-muted);
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary-black);
+            padding: 50px 30px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(212, 165, 116, 0.2);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 0 15px rgba(212, 165, 116, 0.3));
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            font-size: 15px;
+        }
+
+        .footer-contact {
+            color: var(--gold);
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .footer-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 165, 116, 0.3), transparent);
+            margin: 30px 0 20px;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 60px 30px;
+            color: var(--text-muted);
+            font-size: 18px;
+            display: none;
+        }
+
+        .no-results.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            nav {
+                flex-wrap: wrap;
+            }
+
+            .search-container {
+                order: 3;
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 60px 20px;
+            }
+
+            .brand-name {
+                font-size: 16px;
+            }
+
+            .logo-svg {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card {
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+        .product-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo-container" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" style="cursor: pointer;">
+                <svg class="logo-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="150" cy="150" r="135" fill="none" stroke="#d4a574" stroke-width="3"/>
+                    <circle cx="150" cy="150" r="128" fill="none" stroke="#d4a574" stroke-width="1" stroke-dasharray="3,3"/>
+                    <path d="M 150,20 L 155,35 L 145,35 Z" fill="#d4a574"/>
+                    <path d="M 150,280 L 155,265 L 145,265 Z" fill="#d4a574"/>
+                    <path d="M 20,150 L 35,155 L 35,145 Z" fill="#d4a574"/>
+                    <path d="M 280,150 L 265,155 L 265,145 Z" fill="#d4a574"/>
+                    <circle cx="150" cy="150" r="90" fill="none" stroke="#d4a574" stroke-width="12"/>
+                    <circle cx="150" cy="150" r="25" fill="#d4a574"/>
+                    <circle cx="150" cy="150" r="15" fill="#1a1410"/>
+                    <line x1="150" y1="175" x2="150" y2="240" stroke="#d4a574" stroke-width="10" stroke-linecap="round"/>
+                    <line x1="150" y1="175" x2="112" y2="228" stroke="#d4a574" stroke-width="10" stroke-linecap="round" transform="rotate(-120 150 150)"/>
+                    <line x1="150" y1="175" x2="188" y2="228" stroke="#d4a574" stroke-width="10" stroke-linecap="round" transform="rotate(120 150 150)"/>
+                    <circle cx="150" cy="150" r="20" fill="#d4a574" stroke="#1a1410" stroke-width="2"/>
+                    <g transform="translate(150, 150) scale(0.5)">
+                        <path d="M -20,-8 L -15,-12 L -5,-12 L 0,-15 L 8,-15 L 13,-12 L 20,-12 L 22,-8 L 22,3 L 20,5 L -20,5 L -22,3 Z" fill="#1a1410"/>
+                        <circle cx="-12" cy="5" r="4" fill="#d4a574"/>
+                        <circle cx="12" cy="5" r="4" fill="#d4a574"/>
+                    </g>
+                    <path id="topArc" d="M 80,80 A 100 100 0 0 1 220,80" fill="none"/>
+                    <text font-family="Cairo, sans-serif" font-size="20" font-weight="bold" fill="#d4a574">
+                        <textPath href="#topArc" startOffset="50%" text-anchor="middle">
+                            قطع غيار أصلية
+                        </textPath>
+                    </text>
+                    <path id="bottomArc" d="M 80,220 A 100 100 0 0 0 220,220" fill="none"/>
+                    <text font-family="Bebas Neue, sans-serif" font-size="16" fill="#c9a86a" letter-spacing="2">
+                        <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">
+                            ORIGINAL PARTS
+                        </textPath>
+                    </text>
+                </svg>
+                <span class="brand-name">متجر قطع الغيار</span>
+            </div>
+
+            <div class="search-container">
+                <input type="text" class="search-box" id="searchInput" placeholder="ابحث عن قطع الغيار... (بي ام دبليو E38، مرسيدس W210، W221)">
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <a href="https://wa.me/966576784112" class="whatsapp-btn">
+                📱 واتساب
+            </a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>متجر قطع غيار أصلية</h1>
+            <p class="hero-subtitle">قطع غيار أوروبي • جودة عالية • توصيل سريع</p>
+            <div class="hero-divider"></div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products">
+        <h2 class="section-title">منتجاتنا</h2>
+        
+        <div class="products-grid" id="productsGrid">
+            <!-- Product 1: BMW E38 Mirrors -->
+            <div class="product-card" data-search="bmw e38 بي ام دبليو مرايا مرايات جانبية كهربائية سوداء">
+                <div class="product-badge">تايواني</div>
+                <div class="slider-container">
+                    <div class="slider" data-slider="0">
+                        <div class="slide">
+                            <img src="mirror1.jpg" alt="مرايا بي ام دبليو E38 - زاوية 1" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eبي ام دبليو E38 Mirrors%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="slide">
+                            <img src="mirror2.jpg" alt="مرايا بي ام دبليو E38 - زاوية 2" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eبي ام دبليو E38 Mirrors%3C/text%3E%3C/svg%3E'">
+                        </div>
+                    </div>
+                    <button class="slider-btn prev" onclick="moveSlide(0, -1)">❮</button>
+                    <button class="slider-btn next" onclick="moveSlide(0, 1)">❯</button>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="goToSlide(0, 0)"></span>
+                        <span class="dot" onclick="goToSlide(0, 1)"></span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-brand">بي ام دبليو E38</span>
+                    <h3 class="product-title">مرايا جانبية كهربائية</h3>
+                    <p class="product-model">موديل: 1994-2001 • الجهتين متوفرين (يمين + يسار)</p>
+                    <div class="product-features">
+                        <span class="feature-tag">كهربائية</span>
+                        <span class="feature-tag">سوداء</span>
+                    </div>
+                    <a href="https://wa.me/966576784112?text=مرحباً، أريد الاستفسار عن مرايا بي ام دبليو E38 الجانبية الكهربائية" class="product-btn">
+                        📱 استفسر عن السعر
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product 2: Mercedes W210 Headlights -->
+            <div class="product-card" data-search="mercedes w210 مرسيدس شمعات شمعة مصابيح امامية">
+                <div class="product-badge">DEPO</div>
+                <div class="slider-container">
+                    <div class="slider" data-slider="1">
+                        <div class="slide">
+                            <img src="w210-1.jpg" alt="شمعات مرسيدس W210 - منظر أمامي" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eمرسيدس W210 Headlights%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="slide">
+                            <img src="w210-2.jpg" alt="شمعات مرسيدس W210 - منظر خلفي" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eمرسيدس W210 Headlights%3C/text%3E%3C/svg%3E'">
+                        </div>
+                    </div>
+                    <button class="slider-btn prev" onclick="moveSlide(1, -1)">❮</button>
+                    <button class="slider-btn next" onclick="moveSlide(1, 1)">❯</button>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="goToSlide(1, 0)"></span>
+                        <span class="dot" onclick="goToSlide(1, 1)"></span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-brand">مرسيدس W210</span>
+                    <h3 class="product-title">شمعات أمامية DEPO (بدون زينون)</h3>
+                    <p class="product-model">موديل: 1995-2002 • الطقم كامل</p>
+                    <div class="product-features">
+                        <span class="feature-tag">DEPO</span>
+                        <span class="feature-tag">بدون زينون</span>
+                        <span class="feature-tag">جديدة</span>
+                    </div>
+                    <a href="https://wa.me/966576784112?text=مرحباً، أريد الاستفسار عن شمعات مرسيدس W210 الأمامية" class="product-btn">
+                        📱 استفسر عن السعر
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product 3: Mercedes W221 Headlights with Angel Eyes -->
+            <div class="product-card" data-search="mercedes w221 مرسيدس شمعات شمعة مصابيح امامية angel eyes زينون depo">
+                <div class="product-badge">DEPO</div>
+                <div class="slider-container">
+                    <div class="slider" data-slider="2">
+                        <div class="slide">
+                            <img src="w221-1.jpg" alt="شمعات مرسيدس W221 - DEPO" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2220%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eمرسيدس W221 Angel Eyes%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="slide">
+                            <img src="w221-2.jpg" alt="شمعات مرسيدس W221 - الجزء الخلفي" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2220%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eمرسيدس W221 Angel Eyes%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="slide">
+                            <img src="w221-3.jpg" alt="شمعات مرسيدس W221 - تفصيل" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2220%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eمرسيدس W221 Angel Eyes%3C/text%3E%3C/svg%3E'">
+                        </div>
+                    </div>
+                    <button class="slider-btn prev" onclick="moveSlide(2, -1)">❮</button>
+                    <button class="slider-btn next" onclick="moveSlide(2, 1)">❯</button>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="goToSlide(2, 0)"></span>
+                        <span class="dot" onclick="goToSlide(2, 1)"></span>
+                        <span class="dot" onclick="goToSlide(2, 2)"></span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-brand">مرسيدس W221</span>
+                    <h3 class="product-title">شمعات أمامية DEPO</h3>
+                    <p class="product-model">موديل: 2005-2013 • طقم فقط</p>
+                    <div class="product-features">
+                        <span class="feature-tag">DEPO</span>
+                        <span class="feature-tag">جديدة</span>
+                        <span class="feature-tag">إضاءة ليد</span>
+                    </div>
+                    <a href="https://wa.me/966576784112?text=مرحباً، أريد الاستفسار عن شمعات مرسيدس W221 مع حلقات الإضاءة" class="product-btn">
+                        📱 استفسر عن السعر
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product 4: BMW E38 Front Headlight (Original from site) -->
+            <div class="product-card" data-search="bmw e38 بي ام دبليو شمعة شمعات مصباح امامي يمين يسار اصلي زينون تشيك">
+                <div class="product-badge">صناعة تشيك</div>
+                <div class="slider-container">
+                    <div class="slider" data-slider="3">
+                        <div class="slide">
+                            <img src="headlight-front.png" alt="شمعة بي ام دبليو E38 أمامية" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eبي ام دبليو E38 Headlight%3C/text%3E%3C/svg%3E'">
+                        </div>
+                        <div class="slide">
+                            <img src="headlight-back1.png" alt="شمعة بي ام دبليو E38 - الخلف" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eبي ام دبليو E38 Headlight%3C/text%3E%3C/svg%3E'">
+                        </div>
+                    </div>
+                    <button class="slider-btn prev" onclick="moveSlide(3, -1)">❮</button>
+                    <button class="slider-btn next" onclick="moveSlide(3, 1)">❯</button>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="goToSlide(3, 0)"></span>
+                        <span class="dot" onclick="goToSlide(3, 1)"></span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-brand">بي ام دبليو E38</span>
+                    <h3 class="product-title">شمعة / مصباح أمامي</h3>
+                    <p class="product-model">موديل: 1995-2001 • الجهتين متوفرين (يمين + يسار)</p>
+                    <div class="product-features">
+                        <span class="feature-tag">صناعة تشيك</span>
+                        <span class="feature-tag">زينون</span>
+                        <span class="feature-tag">بدون زينون</span>
+                    </div>
+                    <a href="https://wa.me/966576784112?text=مرحباً، أريد الاستفسار عن شمعة بي ام دبليو E38 الأمامية" class="product-btn">
+                        📱 استفسر عن السعر
+                    </a>
+                </div>
+            </div>
+
+            <!-- Product 5: BMW E38 Front Grille (Original from site) -->
+            <div class="product-card" data-search="bmw e38 بي ام دبليو شبك امامي تايواني">
+                <div class="product-badge">تايواني</div>
+                <div class="slider-container">
+                    <div class="slider" data-slider="4">
+                        <div class="slide">
+                            <img src="grille.png" alt="شبك بي ام دبليو E38" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 300%22%3E%3Crect fill=%22%231a1a1a%22 width=%22400%22 height=%22300%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22%23d4a574%22 font-size=%2224%22 text-anchor=%22middle%22 dy=%22.3em%22%3Eبي ام دبليو E38 Grille%3C/text%3E%3C/svg%3E'">
+                        </div>
+                    </div>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="goToSlide(4, 0)"></span>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-brand">بي ام دبليو E38</span>
+                    <h3 class="product-title">شبك أمامي تايواني</h3>
+                    <p class="product-model">موديل: 1995-2001</p>
+                    <div class="product-features">
+                        <span class="feature-tag">جودة عالية</span>
+                        <span class="feature-tag">سعر منافس</span>
+                    </div>
+                    <a href="https://wa.me/966576784112?text=مرحباً، أريد الاستفسار عن شبك بي ام دبليو E38 التايواني" class="product-btn">
+                        📱 استفسر عن السعر
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="no-results" id="noResults">
+            <p>لم يتم العثور على نتائج. جرب البحث بكلمات أخرى.</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="section-title">لماذا نحن الخيار الأفضل؟</h2>
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="feature-icon">✓</div>
+                <h3 class="feature-title">قطع أصلية 100%</h3>
+                <p class="feature-text">نوفر قطع غيار أصلية معتمدة من الوكالة بضمان الجودة والأداء</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">توصيل سريع</h3>
+                <p class="feature-text">خدمة توصيل سريعة لجميع مناطق المملكة بأسرع وقت ممكن</p>
+            </div>
+            <div class="feature-box">
+                <div class="feature-icon">💰</div>
+                <h3 class="feature-title">أسعار تنافسية</h3>
+                <p class="feature-text">أفضل الأسعار في السوق مع عروض خاصة ومستمرة</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <svg class="footer-logo" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="150" cy="150" r="135" fill="none" stroke="#d4a574" stroke-width="3"/>
+                <circle cx="150" cy="150" r="128" fill="none" stroke="#d4a574" stroke-width="1" stroke-dasharray="3,3"/>
+                <path d="M 150,20 L 155,35 L 145,35 Z" fill="#d4a574"/>
+                <path d="M 150,280 L 155,265 L 145,265 Z" fill="#d4a574"/>
+                <path d="M 20,150 L 35,155 L 35,145 Z" fill="#d4a574"/>
+                <path d="M 280,150 L 265,155 L 265,145 Z" fill="#d4a574"/>
+                <circle cx="150" cy="150" r="90" fill="none" stroke="#d4a574" stroke-width="12"/>
+                <circle cx="150" cy="150" r="25" fill="#d4a574"/>
+                <circle cx="150" cy="150" r="15" fill="#1a1410"/>
+                <line x1="150" y1="175" x2="150" y2="240" stroke="#d4a574" stroke-width="10" stroke-linecap="round"/>
+                <line x1="150" y1="175" x2="112" y2="228" stroke="#d4a574" stroke-width="10" stroke-linecap="round" transform="rotate(-120 150 150)"/>
+                <line x1="150" y1="175" x2="188" y2="228" stroke="#d4a574" stroke-width="10" stroke-linecap="round" transform="rotate(120 150 150)"/>
+                <circle cx="150" cy="150" r="20" fill="#d4a574" stroke="#1a1410" stroke-width="2"/>
+                <g transform="translate(150, 150) scale(0.5)">
+                    <path d="M -20,-8 L -15,-12 L -5,-12 L 0,-15 L 8,-15 L 13,-12 L 20,-12 L 22,-8 L 22,3 L 20,5 L -20,5 L -22,3 Z" fill="#1a1410"/>
+                    <circle cx="-12" cy="5" r="4" fill="#d4a574"/>
+                    <circle cx="12" cy="5" r="4" fill="#d4a574"/>
+                </g>
+            </svg>
+            
+            <p class="footer-text">قطع غيار أوروبي</p>
+            <p class="footer-contact" style="color: var(--gold); font-size: 16px; margin-bottom: 15px;">📍 الرياض - مخرج 15 - عند مسجد الراجحي</p>
+            <p class="footer-contact">📱 للتواصل: واتساب فقط - 966576784112</p>
+            
+            <div class="footer-divider"></div>
+            
+            <p class="copyright">© 2025 متجر قطع الغيار. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Image Slider Functionality
+        const sliders = document.querySelectorAll('[data-slider]');
+        
+        function moveSlide(sliderId, direction) {
+            const sliderContainer = document.querySelector(`[data-slider="${sliderId}"]`);
+            const slides = sliderContainer.querySelectorAll('.slide');
+            const dots = sliderContainer.parentElement.querySelectorAll('.dot');
+            
+            let currentIndex = 0;
+            dots.forEach((dot, index) => {
+                if (dot.classList.contains('active')) {
+                    currentIndex = index;
+                }
+            });
+            
+            let newIndex = currentIndex + direction;
+            if (newIndex < 0) newIndex = slides.length - 1;
+            if (newIndex >= slides.length) newIndex = 0;
+            
+            goToSlide(sliderId, newIndex);
+        }
+        
+        function goToSlide(sliderId, index) {
+            const sliderContainer = document.querySelector(`[data-slider="${sliderId}"]`);
+            const dots = sliderContainer.parentElement.querySelectorAll('.dot');
+            
+            sliderContainer.style.transform = `translateX(${index * 100}%)`;
+            
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        // Search Functionality
+        const searchInput = document.getElementById('searchInput');
+        const productsGrid = document.getElementById('productsGrid');
+        const noResults = document.getElementById('noResults');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const products = productsGrid.querySelectorAll('.product-card');
+            let visibleCount = 0;
+            
+            products.forEach(product => {
+                const searchData = product.getAttribute('data-search').toLowerCase();
+                const isVisible = searchData.includes(searchTerm);
+                
+                product.style.display = isVisible ? 'block' : 'none';
+                if (isVisible) visibleCount++;
+            });
+            
+            noResults.classList.toggle('show', visibleCount === 0 && searchTerm !== '');
+        });
+    </script>
+</body>
+</html>
