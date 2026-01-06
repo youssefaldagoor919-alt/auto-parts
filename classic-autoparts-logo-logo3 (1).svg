@@ -1,0 +1,47 @@
+<svg id="logo3" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" style="transform: scale(1.08) rotate(2deg); transition: transform 0.4s;">
+                        <!-- Ornate outer circle -->
+                        <circle cx="150" cy="150" r="135" fill="none" stroke="#d4a574" stroke-width="3"/>
+                        <circle cx="150" cy="150" r="128" fill="none" stroke="#d4a574" stroke-width="1" stroke-dasharray="3,3"/>
+                        
+                        <!-- Decorative corners -->
+                        <path d="M 150,20 L 155,35 L 145,35 Z" fill="#d4a574"/>
+                        <path d="M 150,280 L 155,265 L 145,265 Z" fill="#d4a574"/>
+                        <path d="M 20,150 L 35,155 L 35,145 Z" fill="#d4a574"/>
+                        <path d="M 280,150 L 265,155 L 265,145 Z" fill="#d4a574"/>
+                        
+                        <!-- Steering wheel -->
+                        <circle cx="150" cy="150" r="90" fill="none" stroke="#d4a574" stroke-width="12"/>
+                        <circle cx="150" cy="150" r="25" fill="#d4a574"/>
+                        <circle cx="150" cy="150" r="15" fill="#1a1410"/>
+                        
+                        <!-- Spokes -->
+                        <line x1="150" y1="175" x2="150" y2="240" stroke="#d4a574" stroke-width="10" stroke-linecap="round"/>
+                        <line x1="150" y1="175" x2="112" y2="228" stroke="#d4a574" stroke-width="10" stroke-linecap="round" transform="rotate(-120 150 150)"/>
+                        <line x1="150" y1="175" x2="188" y2="228" stroke="#d4a574" stroke-width="10" stroke-linecap="round" transform="rotate(120 150 150)"/>
+                        
+                        <!-- Center emblem -->
+                        <circle cx="150" cy="150" r="20" fill="#d4a574" stroke="#1a1410" stroke-width="2"/>
+                        
+                        <!-- Vintage car icon in center -->
+                        <g transform="translate(150, 150) scale(0.5)">
+                            <path d="M -20,-8 L -15,-12 L -5,-12 L 0,-15 L 8,-15 L 13,-12 L 20,-12 L 22,-8 L 22,3 L 20,5 L -20,5 L -22,3 Z" fill="#1a1410"/>
+                            <circle cx="-12" cy="5" r="4" fill="#d4a574"/>
+                            <circle cx="12" cy="5" r="4" fill="#d4a574"/>
+                        </g>
+                        
+                        <!-- Top arc text -->
+                        <path id="topArc" d="M 80,80 A 100 100 0 0 1 220,80" fill="none"/>
+                        <text font-family="Cairo, sans-serif" font-size="20" font-weight="bold" fill="#d4a574">
+                            <textPath href="#topArc" startOffset="50%" text-anchor="middle">
+                                قطع غيار أصلية
+                            </textPath>
+                        </text>
+                        
+                        <!-- Bottom arc text -->
+                        <path id="bottomArc" d="M 80,220 A 100 100 0 0 0 220,220" fill="none"/>
+                        <text font-family="Bebas Neue, sans-serif" font-size="16" fill="#c9a86a" letter-spacing="2">
+                            <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">
+                                ORIGINAL PARTS
+                            </textPath>
+                        </text>
+                    </svg>
