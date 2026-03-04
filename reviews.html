@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقييمات العملاء - متجر قطع غيار أوروبي</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --gold: #c8a84b;
+  --gold2: #e8c96b;
+  --text: #f0ece4;
+  --text2: #9a9590;
+  --red: #e84040;
+  --green: #3abf7a;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* HEADER */
+header {
+  position:sticky; top:0; z-index:200;
+  background:rgba(13,13,13,0.97); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:14px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo { font-size:1.1rem; font-weight:900; color:var(--gold); text-decoration:none; }
+.logo span { color:var(--text2); font-weight:400; font-size:0.72rem; display:block; }
+.back-btn {
+  background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  border-radius:50px; padding:8px 16px; font-family:'Cairo',sans-serif;
+  font-size:0.85rem; cursor:pointer; text-decoration:none;
+  transition:all 0.2s; display:flex; align-items:center; gap:6px;
+}
+.back-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+/* HERO */
+.hero {
+  padding:40px 24px 30px; text-align:center;
+  background:radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.07) 0%, transparent 65%);
+}
+.hero h1 { font-size:clamp(1.8rem,4vw,2.6rem); font-weight:900; }
+.hero h1 em { color:var(--gold); font-style:normal; }
+.hero p { color:var(--text2); margin-top:8px; }
+
+/* STATS */
+.stats {
+  display:flex; justify-content:center; gap:40px;
+  padding:20px 24px 30px; flex-wrap:wrap;
+}
+.stat { text-align:center; }
+.stat-num { font-size:2rem; font-weight:900; color:var(--gold); }
+.stat-label { font-size:0.8rem; color:var(--text2); }
+
+/* ADD REVIEW BTN */
+.add-review-wrap { text-align:center; padding:0 24px 30px; }
+.add-review-btn {
+  background:var(--gold); color:#000; border:none; border-radius:50px;
+  padding:12px 32px; font-family:'Cairo',sans-serif; font-weight:700; font-size:1rem;
+  cursor:pointer; transition:all 0.2s;
+}
+.add-review-btn:hover { background:var(--gold2); transform:scale(1.03); }
+
+/* REVIEWS GRID */
+.reviews-wrap { max-width:1200px; margin:0 auto; padding:0 20px 60px; }
+.reviews-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+
+/* REVIEW CARD */
+.review-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  padding:20px; transition:border-color 0.2s, transform 0.2s;
+}
+.review-card:hover { border-color:var(--gold); transform:translateY(-3px); }
+
+.review-header { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.review-avatar {
+  width:42px; height:42px; border-radius:50%;
+  background:rgba(200,168,75,0.15); border:1px solid rgba(200,168,75,0.3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.1rem; font-weight:700; color:var(--gold); flex-shrink:0;
+}
+.review-name { font-weight:700; font-size:0.95rem; }
+.review-date { font-size:0.75rem; color:var(--text2); }
+
+.stars { display:flex; gap:2px; margin-bottom:10px; }
+.star { font-size:1.1rem; }
+.star.filled { color:#f5c518; }
+.star.empty { color:#333; }
+
+.review-comment { font-size:0.88rem; color:var(--text2); line-height:1.7; margin-bottom:12px; }
+
+/* REVIEW IMAGE */
+.review-img {
+  width:100%; border-radius:8px; object-fit:cover; max-height:220px;
+  cursor:pointer; transition:opacity 0.2s;
+}
+.review-img:hover { opacity:0.85; }
+
+/* EMPTY */
+.empty-state { text-align:center; color:var(--text2); padding:60px 20px; grid-column:1/-1; }
+.empty-state span { font-size:3rem; display:block; margin-bottom:12px; }
+
+/* LOADING */
+.loading { text-align:center; color:var(--text2); padding:60px; grid-column:1/-1; }
+.spinner {
+  width:36px; height:36px; border:3px solid var(--border);
+  border-top-color:var(--gold); border-radius:50%;
+  animation:spin 0.8s linear infinite; margin:0 auto 16px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* OVERLAY */
+.overlay {
+  position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.85);
+  display:flex; align-items:center; justify-content:center; padding:20px;
+  opacity:0; pointer-events:none; transition:opacity 0.3s;
+}
+.overlay.open { opacity:1; pointer-events:all; }
+.modal {
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  width:100%; max-width:500px; max-height:92vh; overflow-y:auto;
+  transform:scale(0.95) translateY(20px); transition:transform 0.3s; padding:26px;
+}
+.overlay.open .modal { transform:scale(1) translateY(0); }
+.modal-title { font-size:1.2rem; font-weight:900; margin-bottom:22px; display:flex; align-items:center; justify-content:space-between; }
+.modal-close {
+  background:var(--surface2); border:none; color:var(--text2); width:30px; height:30px;
+  border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+}
+.modal-close:hover { background:var(--red); color:#fff; }
+
+/* FORM */
+.form-group { margin-bottom:16px; }
+.form-group label { display:block; font-size:0.82rem; color:var(--text2); margin-bottom:6px; }
+.form-group input, .form-group textarea {
+  width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+  padding:11px 14px; color:var(--text); font-family:'Cairo',sans-serif; font-size:0.92rem;
+  outline:none; transition:border-color 0.2s; resize:none;
+}
+.form-group input:focus, .form-group textarea:focus { border-color:var(--gold); }
+.form-group input::placeholder, .form-group textarea::placeholder { color:var(--text2); }
+
+/* STAR PICKER */
+.star-picker { display:flex; gap:8px; flex-direction:row-reverse; justify-content:flex-end; }
+.star-picker input { display:none; }
+.star-picker label {
+  font-size:2rem; cursor:pointer; color:#333; transition:color 0.15s;
+}
+.star-picker label:hover,
+.star-picker label:hover ~ label,
+.star-picker input:checked ~ label { color:#f5c518; }
+
+/* IMAGE UPLOAD */
+.img-upload {
+  border:2px dashed var(--border); border-radius:10px; padding:20px;
+  text-align:center; cursor:pointer; transition:border-color 0.2s;
+}
+.img-upload:hover { border-color:var(--gold); }
+.img-upload input { display:none; }
+.img-preview { width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-top:12px; display:none; }
+
+.submit-btn {
+  width:100%; background:var(--gold); color:#000; border:none; border-radius:10px;
+  padding:13px; font-family:'Cairo',sans-serif; font-size:1rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s; margin-top:6px;
+}
+.submit-btn:hover { background:var(--gold2); }
+.submit-btn:disabled { opacity:0.6; cursor:not-allowed; }
+
+.form-error { color:var(--red); font-size:0.8rem; margin-top:8px; text-align:center; }
+.form-success { color:var(--green); font-size:0.82rem; margin-top:8px; text-align:center; }
+
+/* IMAGE LIGHTBOX */
+.lightbox {
+  position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.95);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.3s;
+}
+.lightbox.open { opacity:1; pointer-events:all; }
+.lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; }
+.lightbox-close {
+  position:absolute; top:20px; left:20px;
+  background:rgba(255,255,255,0.1); border:none; color:#fff;
+  width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:1.2rem;
+}
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(100px);
+  background:var(--surface2); border:1px solid var(--gold); color:var(--text);
+  border-radius:50px; padding:11px 22px; font-size:0.88rem; font-weight:600; z-index:1000; transition:transform 0.3s; white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* FOOTER */
+footer { border-top:1px solid var(--border); padding:24px; text-align:center; color:var(--text2); font-size:0.8rem; }
+footer a { color:var(--gold); text-decoration:none; }
+
+@media(max-width:600px){
+  .reviews-grid { grid-template-columns:1fr; }
+  .stats { gap:24px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="index.html">قطع غيار أوروبي<span>الرياض · مخرج 15 · مسجد الراجحي</span></a>
+  <a class="back-btn" href="index.html">← الرئيسية</a>
+</header>
+
+<div class="hero">
+  <h1>تقييمات <em>عملاءنا</em></h1>
+  <p>آراء حقيقية من عملاء اشتروا من متجرنا</p>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num" id="avgRating">-</div>
+    <div class="stat-label">متوسط التقييم ⭐</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" id="totalReviews">-</div>
+    <div class="stat-label">إجمالي التقييمات</div>
+  </div>
+</div>
+
+<div class="add-review-wrap">
+  <button class="add-review-btn" onclick="openModal()">✍️ أضف تقييمك</button>
+</div>
+
+<div class="reviews-wrap">
+  <div class="reviews-grid" id="reviewsGrid">
+    <div class="loading"><div class="spinner"></div>جاري تحميل التقييمات...</div>
+  </div>
+</div>
+
+<footer>
+  <p>📍 الرياض - مخرج 15 - عند مسجد الراجحي</p>
+  <p style="margin-top:5px">واتساب: <a href="https://wa.me/966576784112">966576784112</a></p>
+</footer>
+
+<!-- ADD REVIEW MODAL -->
+<div class="overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">
+      <span>✍️ أضف تقييمك</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>اسمك</label>
+      <input type="text" id="rName" placeholder="محمد العتيبي">
+    </div>
+
+    <div class="form-group">
+      <label>تقييمك (اختر عدد النجوم)</label>
+      <div class="star-picker">
+        <input type="radio" name="rating" id="s5" value="5"><label for="s5">★</label>
+        <input type="radio" name="rating" id="s4" value="4"><label for="s4">★</label>
+        <input type="radio" name="rating" id="s3" value="3"><label for="s3">★</label>
+        <input type="radio" name="rating" id="s2" value="2"><label for="s2">★</label>
+        <input type="radio" name="rating" id="s1" value="1"><label for="s1">★</label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>تعليقك</label>
+      <textarea id="rComment" rows="4" placeholder="شاركنا تجربتك مع المتجر..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>صورة (اختياري)</label>
+      <div class="img-upload" onclick="document.getElementById('rImage').click()">
+        <div id="uploadText">📷 اضغط لرفع صورة</div>
+        <input type="file" id="rImage" accept="image/*" onchange="previewImage(this)">
+        <img class="img-preview" id="imgPreview">
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitReview()">إرسال التقييم</button>
+    <div id="formMsg"></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://mmpwirurazzhzfkbuflm.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcHdpcnVyYXp6aHpma2J1ZmxtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzExNTQsImV4cCI6MjA4NzgwNzE1NH0.wEMkfCTmrREKSKxWGkBQgs4XtIumOX_efNdpIvbdWUA';
+
+const headers = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': `Bearer ${SUPABASE_KEY}`,
+  'Content-Type': 'application/json'
+};
+
+// =====================
+// LOAD REVIEWS
+// =====================
+async function loadReviews() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/reviews?order=created_at.desc`, { headers });
+    const data = await res.json();
+    renderReviews(data);
+    updateStats(data);
+  } catch(e) {
+    document.getElementById('reviewsGrid').innerHTML = `<div class="empty-state"><span>⚠️</span>تعذر تحميل التقييمات</div>`;
+  }
+}
+
+function renderReviews(reviews) {
+  const grid = document.getElementById('reviewsGrid');
+  if (!reviews.length) {
+    grid.innerHTML = `<div class="empty-state"><span>💬</span>لا يوجد تقييمات بعد<br><small>كن أول من يقيّم!</small></div>`;
+    return;
+  }
+  grid.innerHTML = reviews.map(r => `
+    <div class="review-card">
+      <div class="review-header">
+        <div class="review-avatar">${r.name ? r.name.charAt(0) : '؟'}</div>
+        <div>
+          <div class="review-name">${r.name || 'مجهول'}</div>
+          <div class="review-date">${formatDate(r.created_at)}</div>
+        </div>
+      </div>
+      <div class="stars">${renderStars(r.rating)}</div>
+      ${r.comment ? `<div class="review-comment">${r.comment}</div>` : ''}
+      ${r.image_url ? `<img class="review-img" src="${r.image_url}" alt="صورة التقييم" onclick="openLightbox('${r.image_url}')">` : ''}
+    </div>
+  `).join('');
+}
+
+function renderStars(rating) {
+  return [1,2,3,4,5].map(i =>
+    `<span class="star ${i <= rating ? 'filled' : 'empty'}">★</span>`
+  ).join('');
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  return new Date(dateStr).toLocaleDateString('ar-SA', { year:'numeric', month:'long', day:'numeric' });
+}
+
+function updateStats(reviews) {
+  document.getElementById('totalReviews').textContent = reviews.length;
+  if (reviews.length) {
+    const avg = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+    document.getElementById('avgRating').textContent = avg.toFixed(1) + ' ⭐';
+  } else {
+    document.getElementById('avgRating').textContent = '-';
+  }
+}
+
+// =====================
+// SUBMIT REVIEW
+// =====================
+async function submitReview() {
+  const name    = document.getElementById('rName').value.trim();
+  const comment = document.getElementById('rComment').value.trim();
+  const ratingEl = document.querySelector('input[name="rating"]:checked');
+  const msg     = document.getElementById('formMsg');
+  const btn     = document.getElementById('submitBtn');
+
+  if (!name)     { msg.className='form-error'; msg.textContent='الرجاء كتابة اسمك'; return; }
+  if (!ratingEl) { msg.className='form-error'; msg.textContent='الرجاء اختيار عدد النجوم'; return; }
+  if (!comment)  { msg.className='form-error'; msg.textContent='الرجاء كتابة تعليقك'; return; }
+
+  const rating = parseInt(ratingEl.value);
+  btn.disabled = true; btn.textContent = 'جاري الإرسال...';
+
+  // Upload image if exists
+  let image_url = null;
+  const imgFile = document.getElementById('rImage').files[0];
+  if (imgFile) {
+    image_url = await uploadImage(imgFile);
+  }
+
+  // Save to Supabase
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/reviews`, {
+      method: 'POST',
+      headers: { ...headers, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({ name, rating, comment, image_url })
+    });
+
+    if (res.ok || res.status === 201) {
+      closeModal();
+      showToast('تم إضافة تقييمك بنجاح 🎉');
+      loadReviews();
+    } else {
+      throw new Error('فشل الإرسال');
+    }
+  } catch(e) {
+    msg.className = 'form-error';
+    msg.textContent = 'حدث خطأ، حاول مرة ثانية';
+    btn.disabled = false; btn.textContent = 'إرسال التقييم';
+  }
+}
+
+// =====================
+// IMAGE UPLOAD (Supabase Storage)
+// =====================
+async function uploadImage(file) {
+  try {
+    const ext  = file.name.split('.').pop();
+    const path = `review_${Date.now()}.${ext}`;
+    const res  = await fetch(`${SUPABASE_URL}/storage/v1/object/reviews/${path}`, {
+      method: 'POST',
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`, 'Content-Type': file.type },
+      body: file
+    });
+    if (res.ok) {
+      return `${SUPABASE_URL}/storage/v1/object/public/reviews/${path}`;
+    }
+  } catch(e) {}
+  return null;
+}
+
+// =====================
+// IMAGE PREVIEW
+// =====================
+function previewImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const preview = document.getElementById('imgPreview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    document.getElementById('uploadText').textContent = '✅ تم اختيار الصورة';
+  };
+  reader.readAsDataURL(file);
+}
+
+// =====================
+// MODAL
+// =====================
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('formMsg').textContent = '';
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').textContent = 'إرسال التقييم';
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('rName').value = '';
+  document.getElementById('rComment').value = '';
+  document.getElementById('rImage').value = '';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('uploadText').textContent = '📷 اضغط لرفع صورة';
+  document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
+}
+
+// =====================
+// LIGHTBOX
+// =====================
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+// =====================
+// TOAST
+// =====================
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// =====================
+// CLOSE ON BACKDROP
+// =====================
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target===this) closeModal(); });
+
+// =====================
+// INIT
+// =====================
+loadReviews();
+</script>
+</body>
+</html>
