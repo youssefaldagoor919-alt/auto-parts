@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر قطع غيار</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d0d;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --border: #2a2a2a;
+  --gold: #c8a84b;
+  --gold2: #e8c96b;
+  --text: #f0ece4;
+  --text2: #9a9590;
+  --red: #e84040;
+  --green: #3abf7a;
+  --radius: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Cairo',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* HEADER */
+header {
+  position:sticky; top:0; z-index:200;
+  background:rgba(13,13,13,0.97);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:12px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+}
+.logo { font-size:1.1rem; font-weight:900; color:var(--gold); white-space:nowrap; }
+.logo span { color:var(--text2); font-weight:400; font-size:0.72rem; display:block; }
+
+.header-search { flex:1; max-width:380px; position:relative; }
+.header-search input {
+  width:100%; background:var(--surface2); border:1px solid var(--border);
+  border-radius:50px; padding:9px 40px 9px 18px;
+  color:var(--text); font-family:'Cairo',sans-serif; font-size:0.88rem;
+  outline:none; transition:border-color 0.2s;
+}
+.header-search input:focus { border-color:var(--gold); }
+.header-search input::placeholder { color:var(--text2); }
+.search-icon { position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--text2); pointer-events:none; }
+
+.header-actions { display:flex; gap:10px; align-items:center; }
+.cart-btn {
+  background:var(--gold); color:#000; border:none; border-radius:50px;
+  padding:8px 16px; font-family:'Cairo',sans-serif; font-weight:700; font-size:0.88rem;
+  cursor:pointer; display:flex; align-items:center; gap:7px; transition:all 0.2s; white-space:nowrap;
+}
+.cart-btn:hover { background:var(--gold2); }
+.cart-count {
+  background:#000; color:var(--gold); border-radius:50%;
+  width:19px; height:19px; font-size:0.72rem;
+  display:flex; align-items:center; justify-content:center; font-weight:900;
+}
+.user-btn {
+  background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  border-radius:50px; padding:8px 14px; font-family:'Cairo',sans-serif;
+  font-size:0.82rem; cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.user-btn:hover { border-color:var(--gold); color:var(--gold); }
+
+/* HERO */
+.hero {
+  padding:40px 24px 28px; text-align:center;
+  background:radial-gradient(ellipse at 50% 0%, rgba(200,168,75,0.07) 0%, transparent 65%);
+}
+.hero h1 { font-size:clamp(1.7rem,4vw,2.8rem); font-weight:900; line-height:1.2; }
+.hero h1 em { color:var(--gold); font-style:normal; }
+.hero p { color:var(--text2); margin-top:8px; font-size:0.95rem; }
+
+/* LAYOUT */
+.main-layout {
+  display:flex; max-width:1340px; margin:0 auto;
+  padding:24px 20px; gap:22px; align-items:flex-start;
+}
+
+/* SIDEBAR */
+.sidebar { width:210px; flex-shrink:0; position:sticky; top:74px; }
+.sidebar-label {
+  font-size:0.7rem; font-weight:700; color:var(--text2);
+  text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; padding:0 4px;
+}
+.sidebar-menu { list-style:none; margin-bottom:20px; }
+.sidebar-menu li { margin-bottom:3px; }
+.sidebar-menu button {
+  width:100%; background:none; border:none; color:var(--text2);
+  font-family:'Cairo',sans-serif; font-size:0.88rem; padding:9px 12px; border-radius:8px;
+  cursor:pointer; text-align:right; display:flex; align-items:center; gap:8px; transition:all 0.2s;
+}
+.sidebar-menu button:hover { background:var(--surface2); color:var(--text); }
+.sidebar-menu button.active { background:rgba(200,168,75,0.13); color:var(--gold); font-weight:700; }
+
+.sidebar-box { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px; }
+.sidebar-box p { font-size:0.78rem; color:var(--text2); line-height:1.9; }
+.wa-sidebar {
+  display:flex; align-items:center; justify-content:center; gap:7px;
+  margin-top:12px; background:#25D366; color:#fff; border-radius:8px; padding:9px 12px;
+  text-decoration:none; font-size:0.85rem; font-weight:700; transition:opacity 0.2s;
+}
+.wa-sidebar:hover { opacity:0.85; }
+
+/* CONTENT */
+.content { flex:1; min-width:0; }
+.section-title {
+  font-size:1.2rem; font-weight:700; margin-bottom:18px;
+  padding-bottom:10px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:8px;
+}
+.section-title::before { content:''; display:block; width:4px; height:22px; background:var(--gold); border-radius:4px; }
+.results-count { font-size:0.8rem; color:var(--text2); font-weight:400; margin-right:auto; }
+
+/* PRODUCTS GRID */
+.products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:18px; }
+
+/* CARD */
+.product-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+  transition:transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+.product-card:hover { transform:translateY(-4px); border-color:var(--gold); box-shadow:0 10px 36px rgba(200,168,75,0.1); }
+
+.slider { position:relative; aspect-ratio:4/3; overflow:hidden; background:#111; max-height:180px; direction:ltr; }
+.slides { display:flex; height:100%; transition:transform 0.38s ease; direction:ltr; }
+.slides img { width:100%; min-width:100%; height:100%; object-fit:cover; flex-shrink:0; }
+.slider-btn {
+  position:absolute; top:50%; transform:translateY(-50%);
+  background:rgba(0,0,0,0.55); color:#fff; border:none; cursor:pointer;
+  padding:7px 11px; font-size:0.9rem; z-index:5; transition:background 0.2s;
+}
+.slider-btn:hover { background:rgba(200,168,75,0.8); }
+.slider-btn.prev { left:0; border-radius:0 6px 6px 0; }
+.slider-btn.next { right:0; border-radius:6px 0 0 6px; }
+.slider-dots { position:absolute; bottom:7px; width:100%; display:flex; justify-content:center; gap:4px; }
+.dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.35); cursor:pointer; transition:all 0.2s; }
+.dot.active { background:var(--gold); width:14px; border-radius:4px; }
+
+/* PRODUCT INFO */
+.product-info { padding:14px; text-align:center; }
+.product-badge {
+  font-size:0.68rem; font-weight:700; background:rgba(200,168,75,0.13); color:var(--gold);
+  border:1px solid rgba(200,168,75,0.28); padding:3px 9px; border-radius:20px;
+  display:inline-block; margin-bottom:7px;
+}
+.product-name { font-size:0.97rem; font-weight:700; margin-bottom:3px; }
+.product-sub { font-size:0.78rem; color:var(--text2); margin-bottom:12px; line-height:1.6; }
+
+/* SETS */
+.sets-label { font-size:0.75rem; color:var(--text2); margin-bottom:6px; font-weight:600; }
+.set-item {
+  display:flex; align-items:center; gap:6px;
+  background:var(--surface2); border-radius:8px; padding:7px 10px; margin-bottom:5px;
+  border:1px solid var(--border);
+}
+.set-name { font-size:0.82rem; flex:1; }
+.set-price { font-size:0.82rem; font-weight:700; color:var(--gold); white-space:nowrap; }
+.set-add {
+  background:var(--gold); color:#000; border:none; border-radius:6px;
+  padding:5px 10px; font-family:'Cairo',sans-serif; font-size:0.76rem; font-weight:700;
+  cursor:pointer; transition:all 0.2s; white-space:nowrap;
+}
+.set-add:hover { background:var(--gold2); }
+.set-add.added { background:var(--green); color:#fff; }
+
+.product-footer { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:4px; }
+.product-price { font-size:1.05rem; font-weight:900; color:var(--gold); }
+.product-price small { font-size:0.7rem; color:var(--text2); font-weight:400; }
+.add-cart-btn {
+  background:var(--gold); color:#000; border:none; border-radius:8px; padding:8px 14px;
+  font-family:'Cairo',sans-serif; font-weight:700; font-size:0.82rem; cursor:pointer; transition:all 0.2s;
+}
+.add-cart-btn:hover { background:var(--gold2); }
+.add-cart-btn.added { background:var(--green); color:#fff; }
+.wa-small {
+  color:var(--text2); font-size:0.78rem; text-decoration:none;
+  display:flex; align-items:center; gap:5px; transition:color 0.2s;
+}
+.wa-small:hover { color:#25D366; }
+
+/* OVERLAY */
+.overlay {
+  position:fixed; inset:0; z-index:500; background:rgba(0,0,0,0.82);
+  display:flex; align-items:center; justify-content:center; padding:20px;
+  opacity:0; pointer-events:none; transition:opacity 0.3s;
+}
+.overlay.open { opacity:1; pointer-events:all; }
+.modal {
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  width:100%; max-width:480px; max-height:90vh; overflow-y:auto;
+  transform:scale(0.95) translateY(20px); transition:transform 0.3s; padding:26px;
+}
+.overlay.open .modal { transform:scale(1) translateY(0); }
+.modal-title { font-size:1.2rem; font-weight:900; margin-bottom:22px; display:flex; align-items:center; justify-content:space-between; }
+.modal-close {
+  background:var(--surface2); border:none; color:var(--text2); width:30px; height:30px;
+  border-radius:50%; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+}
+.modal-close:hover { background:var(--red); color:#fff; }
+
+/* AUTH */
+.auth-tabs { display:flex; border-radius:10px; overflow:hidden; border:1px solid var(--border); margin-bottom:22px; }
+.auth-tab {
+  flex:1; padding:9px; text-align:center; background:transparent; border:none;
+  color:var(--text2); font-family:'Cairo',sans-serif; font-size:0.88rem; font-weight:600; cursor:pointer; transition:all 0.2s;
+}
+.auth-tab.active { background:var(--gold); color:#000; }
+.form-group { margin-bottom:14px; }
+.form-group label { display:block; font-size:0.82rem; color:var(--text2); margin-bottom:5px; }
+.form-group input {
+  width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:10px;
+  padding:11px 14px; color:var(--text); font-family:'Cairo',sans-serif; font-size:0.92rem; transition:border-color 0.2s; outline:none;
+}
+.form-group input:focus { border-color:var(--gold); }
+.form-group input::placeholder { color:var(--text2); }
+.submit-btn {
+  width:100%; background:var(--gold); color:#000; border:none; border-radius:10px;
+  padding:12px; font-family:'Cairo',sans-serif; font-size:0.97rem; font-weight:700; cursor:pointer; transition:all 0.2s; margin-top:6px;
+}
+.submit-btn:hover { background:var(--gold2); }
+.submit-btn:disabled { opacity:0.6; cursor:not-allowed; }
+.form-error { color:var(--red); font-size:0.8rem; margin-top:8px; text-align:center; }
+
+/* CART */
+.cart-modal { max-width:560px; }
+.cart-item {
+  display:flex; align-items:center; gap:10px; padding:12px;
+  border-radius:10px; background:var(--surface2); margin-bottom:8px;
+}
+.cart-item-info { flex:1; }
+.cart-item-name { font-size:0.87rem; font-weight:600; }
+.cart-item-sub { font-size:0.75rem; color:var(--text2); }
+.cart-item-price { color:var(--gold); font-weight:700; font-size:0.9rem; white-space:nowrap; }
+.remove-item { background:none; border:none; color:var(--text2); cursor:pointer; font-size:1rem; padding:4px; transition:color 0.2s; }
+.remove-item:hover { color:var(--red); }
+.cart-empty { text-align:center; color:var(--text2); padding:40px 0; }
+.cart-summary { border-top:1px solid var(--border); padding-top:14px; margin-bottom:18px; }
+.cart-total { display:flex; justify-content:space-between; font-size:1rem; font-weight:700; }
+.cart-total span:last-child { color:var(--gold); }
+.checkout-section { margin-top:14px; }
+.checkout-section h3 { font-size:0.95rem; color:var(--text2); margin-bottom:12px; }
+
+/* SUCCESS */
+.success-screen { text-align:center; padding:16px 0; }
+.success-icon {
+  width:68px; height:68px; background:rgba(58,191,122,0.12); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:1.9rem;
+  margin:0 auto 18px; border:2px solid var(--green);
+}
+.success-screen h2 { font-size:1.3rem; margin-bottom:10px; }
+.success-screen p { color:var(--text2); font-size:0.88rem; line-height:1.8; }
+.wa-success {
+  display:inline-block; margin-top:18px; background:#25D366; color:#fff;
+  border-radius:10px; padding:11px 22px; text-decoration:none; font-weight:700; font-size:0.9rem;
+}
+
+/* USER BAR */
+.user-info-bar {
+  display:flex; align-items:center; gap:7px; background:var(--surface2);
+  border:1px solid var(--border); border-radius:50px; padding:5px 12px; font-size:0.8rem;
+}
+.user-dot { width:7px; height:7px; background:var(--green); border-radius:50%; }
+.logout-link {
+  color:var(--text2); cursor:pointer; font-size:0.73rem; text-decoration:underline;
+  background:none; border:none; font-family:'Cairo',sans-serif; transition:color 0.2s;
+}
+.logout-link:hover { color:var(--red); }
+
+/* PRODUCT MODAL */
+.product-modal { max-width:520px; }
+.product-modal-img { width:100%; border-radius:10px; object-fit:cover; max-height:260px; margin-bottom:16px; }
+.product-modal-slides { position:relative; margin-bottom:16px; border-radius:10px; overflow:hidden; direction:ltr; }
+.product-modal-slides .slides { display:flex; transition:transform 0.35s ease; direction:ltr; }
+.product-modal-slides .slides img { width:100%; min-width:100%; max-height:260px; object-fit:cover; flex-shrink:0; }
+.pm-set-item {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--surface2); border-radius:10px; padding:12px 14px; margin-bottom:8px;
+  border:1px solid var(--border); transition:border-color 0.2s;
+}
+.pm-set-item:hover { border-color:var(--gold); }
+.pm-set-name { font-size:0.9rem; font-weight:600; }
+.pm-set-add {
+  background:var(--gold); color:#000; border:none; border-radius:8px;
+  padding:7px 16px; font-family:'Cairo',sans-serif; font-weight:700; font-size:0.85rem;
+  cursor:pointer; transition:all 0.2s;
+}
+.pm-set-add:hover { background:var(--gold2); }
+.pm-set-add.added { background:var(--green); color:#fff; }
+.pm-single-add {
+  width:100%; background:var(--gold); color:#000; border:none; border-radius:10px;
+  padding:12px; font-family:'Cairo',sans-serif; font-weight:700; font-size:0.97rem;
+  cursor:pointer; transition:all 0.2s; margin-top:8px;
+}
+.pm-single-add:hover { background:var(--gold2); }
+
+/* TOAST */
+.toast {
+  position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(100px);
+  background:var(--surface2); border:1px solid var(--gold); color:var(--text);
+  border-radius:50px; padding:11px 22px; font-size:0.88rem; font-weight:600; z-index:1000; transition:transform 0.3s; white-space:nowrap;
+}
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* FOOTER */
+footer { border-top:1px solid var(--border); padding:28px 24px; text-align:center; color:var(--text2); font-size:0.8rem; margin-top:20px; }
+footer a { color:var(--gold); text-decoration:none; }
+
+/* MOBILE */
+@media(max-width:768px){
+  .main-layout { flex-direction:column; padding:16px; }
+  .sidebar { width:100%; position:static; }
+  .sidebar-menu { display:flex; flex-wrap:wrap; gap:6px; }
+  .sidebar-menu li { flex:none; }
+  .sidebar-menu button { padding:6px 12px; white-space:nowrap; width:auto; }
+  .sidebar-box { display:none; }
+  .products-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media(max-width:480px){
+  header { flex-wrap:wrap; padding:10px 12px; gap:8px; }
+  .logo { font-size:0.95rem; flex:1; }
+  .logo span { display:block; }
+  .header-search { order:3; width:100%; max-width:none; }
+  .header-search input { width:100%; font-size:0.9rem; padding:10px 36px 10px 14px; }
+  .header-actions { gap:6px; }
+  .cart-btn { padding:7px 12px; font-size:0.82rem; }
+  .user-btn { padding:7px 10px; font-size:0.78rem; }
+  .products-grid { grid-template-columns: 1fr; }
+  .set-item { flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">قطع غيار<span>الرياض · مخرج 15 · مسجد الراجحي</span></div>
+  <div class="header-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="ابحث عن قطعة..." oninput="filterProducts()">
+  </div>
+  <div class="header-actions">
+    <a href="reviews.html" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:50px;padding:8px 14px;font-family:'Cairo',sans-serif;font-size:0.82rem;text-decoration:none;transition:all 0.2s;white-space:nowrap;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">⭐ التقييمات</a>
+    <div id="userArea"><button class="user-btn" onclick="openAuth()">تسجيل الدخول</button></div>
+    <button class="cart-btn" onclick="openCart()">🛒 السلة<span class="cart-count" id="cartCount">0</span></button>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>قطع غيار <em>أوروبية</em><br>أصلية وعالية الجودة</h1>
+  <p>BMW · Mercedes · بأفضل الأسعار</p>
+</div>
+
+<div class="main-layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-label">الأقسام</div>
+    <ul class="sidebar-menu" id="sidebarMenu">
+      <li><button class="active" onclick="filterCat('all',this)">🚗 جميع المنتجات</button></li>
+      <li><button onclick="filterCat('bmw',this)">🔵 BMW</button></li>
+      <li><button onclick="filterCat('mercedes',this)">⭐ Mercedes</button></li>
+      <li><button onclick="filterCat('lexus',this)">🟩 Lexus</button></li>
+      <li><button onclick="filterCat('ميكانيك',this)">🔧 ميكانيك</button></li>
+      
+      
+      
+      
+    </ul>
+    <div class="sidebar-box">
+      <p>📍 الرياض<br>مخرج 15<br>عند مسجد الراجحي<br><br>📱 واتساب فقط</p>
+      <a class="wa-sidebar" href="https://wa.me/966576784112" target="_blank">📱 تواصل واتساب</a>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div class="section-title">
+      <span id="sectionLabel">جميع المنتجات</span>
+      <span class="results-count" id="resultsCount"></span>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</div>
+
+<footer>
+  <p>📍 الرياض - مخرج 15 - عند مسجد الراجحي</p>
+  <p style="margin-top:5px">واتساب: <a href="https://wa.me/966576784112">966576784112</a></p>
+  <p style="margin-top:8px;color:#444">© 2025 متجر قطع الغيار</p>
+</footer>
+
+<!-- PRODUCT MODAL -->
+<div class="overlay" id="productOverlay">
+  <div class="modal product-modal">
+    <div class="modal-title">
+      <span id="pmTitle"></span>
+      <button class="modal-close" onclick="closeProductModal()">✕</button>
+    </div>
+    <div id="pmBody"></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="overlay" id="authOverlay">
+  <div class="modal">
+    <div class="modal-title"><span>حسابي</span><button class="modal-close" onclick="closeAuth()">✕</button></div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">تسجيل الدخول</button>
+      <button class="auth-tab" id="tabRegister" onclick="switchTab('register')">إنشاء حساب</button>
+    </div>
+    <div id="authForm"></div>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="overlay" id="cartOverlay">
+  <div class="modal cart-modal">
+    <div class="modal-title"><span>🛒 سلة المشتريات</span><button class="modal-close" onclick="closeCart()">✕</button></div>
+    <div id="cartBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// بيانات المنتجات - عدّل هنا لإضافة منتجات جديدة
+// لكل منتج بأطقم: ضع sets بدل price
+// لكل منتج بدون أطقم: ضع price فقط
+// ============================================================
+const products = [
+  {
+    id:1, brand:'BMW E38', category:['bmw','مرايا'],
+    name:'مرايا جانبية كهربائية', sub:'موديل: 1994-2001',
+    images:['mirror1.jpg','mirror2.jpg'],
+    wa:'مرحباً، أريد الاستفسار عن مرايا BMW E38',
+    sets:[
+      {id:'1a', name:'يمين', price:'استفسر'},
+      {id:'1b', name:'يسار', price:'استفسر'}
+    ]
+  },
+  {
+    id:2, brand:'BMW E30', category:['مكينة','ميكانيك'],
+    name:'راس مكينة أصلي جديد', sub:'محرك 1.6 • موديل: 1982-1994',
+    images:['cylinder-head1.jpg','cylinder-head2.jpg','cylinder-head3.jpg'],
+    wa:'مرحباً، أريد الاستفسار عن راس مكينة BMW E30',
+    sets:null, price:'استفسر'
+  },
+  {
+    id:3, brand:'Mercedes W210', category:['mercedes','شمعات'],
+    name:'شمعات أمامية DEPO', sub:'موديل: 1995-2002 • بدون زينون',
+    images:['w210-1.jpg','w210-2.jpg'],
+    wa:'مرحباً، أريد الاستفسار عن شمعات Mercedes W210',
+    sets:[
+      {id:'3a', name:'يمين', price:'استفسر'},
+      {id:'3b', name:'يسار', price:'استفسر'}
+    ]
+  },
+  {
+    id:4, brand:'Mercedes W221', category:['mercedes','شمعات'],
+    name:'شمعات أمامية DEPO Angel Eyes', sub:'موديل: 2005-2013',
+    images:['w221-1.jpg','w221-2.jpg','w221-3.jpg'],
+    wa:'مرحباً، أريد الاستفسار عن شمعات Mercedes W221',
+    sets:[
+      {id:'4a', name:'يمين', price:'استفسر'},
+      {id:'4b', name:'يسار', price:'استفسر'}
+    ]
+  },
+  {
+    id:5, brand:'Mercedes W140', category:['mercedes'],
+    name:'دركسون شبح أصلي', sub:'بدون إيرباق • حالة ممتازة',
+    images:['w140-steering.jpg'],
+    wa:'مرحباً، أريد الاستفسار عن دركسون Mercedes W140',
+    sets:null, price:'استفسر'
+  },
+  {
+    id:6, brand:'Mercedes W140', category:['mercedes','شبك'],
+    name:'شبك أمامي تايواني', sub:'موديل: 1991-1998',
+    images:['w140-grille.jpg'],
+    wa:'مرحباً، أريد الاستفسار عن شبك Mercedes W140',
+    sets:null, price:'استفسر'
+  },
+  {
+    id:7, brand:'BMW E38', category:['bmw','شمعات'],
+    name:'شمعات أمامية', sub:'موديل: 1995-2001 • صناعة تشيك',
+    images:['headlight-front.png','headlight-back1.png'],
+    wa:'مرحباً، أريد الاستفسار عن شمعة BMW E38',
+    sets:[
+      {id:'7a', name:'زينون + جهاز — يمين',    price:'استفسر'},
+      {id:'7b', name:'زينون + جهاز — يسار',    price:'استفسر'},
+      {id:'7d', name:'زينون بدون جهاز — يمين', price:'استفسر'},
+      {id:'7e', name:'زينون بدون جهاز — يسار', price:'استفسر'},
+      {id:'7g', name:'بدون زينون — يمين',      price:'استفسر'},
+      {id:'7h', name:'بدون زينون — يسار',      price:'استفسر'},
+    ]
+  },
+  {
+    id:8, brand:'BMW E38', category:['bmw','شبك'],
+    name:'شبك أمامي تايواني', sub:'موديل: 1995-2001',
+    images:['grille.png'],
+    wa:'مرحباً، أريد الاستفسار عن شبك BMW E38',
+    sets:[
+      {id:'8a', name:'يمين', price:'استفسر'},
+      {id:'8b', name:'يسار', price:'استفسر'}
+    ]
+  }
+];
+
+// STATE
+let cart=[], currentUser=JSON.parse(localStorage.getItem('autoUser')||'null');
+let users=JSON.parse(localStorage.getItem('autoUsers')||'[]');
+let currentTab='login', activeCategory='all';
+const sliderIdx={};
+
+// WA SVG
+const waSvg=`<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+// RENDER
+function renderProducts(list){
+  const grid=document.getElementById('productsGrid');
+  document.getElementById('resultsCount').textContent=list.length+' منتج';
+  if(!list.length){grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;color:var(--text2);padding:60px 20px;font-size:2rem">🔍<br><span style="font-size:1rem">لا توجد نتائج</span></div>`;return;}
+  grid.innerHTML=list.map(p=>`
+    <div class="product-card">
+      <div class="slider" style="cursor:pointer" onclick="openProductModal(${p.id})">
+        <div class="slides" id="slides-${p.id}">
+          ${p.images.map(img=>`<img src="${img}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22><rect fill=%22%23181818%22 width=%22400%22 height=%22300%22/><text x=%2250%%22 y=%2250%%22 fill=%22%23555%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2216%22>صورة قريباً</text></svg>'">`).join('')}
+        </div>
+        ${p.images.length>1?`
+          <button class="slider-btn prev" onclick="event.stopPropagation();slide(${p.id},-1)">❮</button>
+          <button class="slider-btn next" onclick="event.stopPropagation();slide(${p.id},1)">❯</button>
+          <div class="slider-dots">${p.images.map((_,i)=>`<div class="dot${i===0?' active':''}" id="dot-${p.id}-${i}" onclick="event.stopPropagation();goSlide(${p.id},${i})"></div>`).join('')}</div>
+        `:''}
+        <div style="position:absolute;bottom:10px;right:10px;background:rgba(200,168,75,0.85);color:#000;border-radius:20px;padding:4px 10px;font-size:0.75rem;font-weight:700;">اضغط للتفاصيل 👆</div>
+      </div>
+      <div class="product-info">
+        <div class="product-badge">${p.brand}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-sub">${p.sub}</div>
+        <div class="product-footer">
+          <a class="wa-small" href="https://wa.me/966576784112?text=${encodeURIComponent(p.wa)}" target="_blank">${waSvg} استفسر</a>
+          <button class="add-cart-btn" onclick="openProductModal(${p.id})">+ سلة</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+// FILTER
+function getFiltered(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  return products.filter(p=>{
+    const cat=activeCategory==='all'||p.category.some(c=>c.toLowerCase().includes(activeCategory.toLowerCase()));
+    const srch=!q||p.name.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q)||p.sub.toLowerCase().includes(q);
+    return cat&&srch;
+  });
+}
+function filterProducts(){renderProducts(getFiltered());}
+function filterCat(cat,btn){
+  activeCategory=cat;
+  document.querySelectorAll('#sidebarMenu button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const labels={'all':'جميع المنتجات','bmw':'BMW','mercedes':'Mercedes','lexus':'Lexus','ميكانيك':'ميكانيك'};
+  document.getElementById('sectionLabel').textContent=labels[cat]||cat;
+  filterProducts();
+}
+
+// SLIDER
+function slide(id,dir){
+  const p=products.find(x=>x.id===id); if(!p||p.images.length<=1)return;
+  sliderIdx[id]=((sliderIdx[id]||0)+dir+p.images.length)%p.images.length; updateSlider(id);
+}
+function goSlide(id,idx){sliderIdx[id]=idx;updateSlider(id);}
+function updateSlider(id){
+  const idx=sliderIdx[id]||0;
+  const s=document.getElementById('slides-'+id); if(s)s.style.transform=`translateX(${idx*100}%)`;
+  const p=products.find(x=>x.id===id);
+  if(p)p.images.forEach((_,i)=>{const d=document.getElementById(`dot-${id}-${i}`);if(d)d.className='dot'+(i===idx?' active':'');});
+}
+
+// PRODUCT MODAL
+function openProductModal(id){
+  const p=products.find(x=>x.id===id);
+  if(!p)return;
+  document.getElementById('pmTitle').textContent=p.name;
+  const body=document.getElementById('pmBody');
+  const slider=p.images.length>1?`
+    <div class="product-modal-slides">
+      <div class="slides" id="pmSlides-${p.id}">
+        ${p.images.map(img=>`<img src="${img}" alt="${p.name}" onerror="this.style.display='none'">`).join('')}
+      </div>
+      <button class="slider-btn prev" onclick="pmSlide(${p.id},-1)">❮</button>
+      <button class="slider-btn next" onclick="pmSlide(${p.id},1)">❯</button>
+    </div>`
+    :`<img class="product-modal-img" src="${p.images[0]}" alt="${p.name}" onerror="this.style.display='none'">`;
+  const badge=`<div style="margin-bottom:8px"><span class="product-badge">${p.brand}</span></div>`;
+  const sub=`<div style="color:var(--text2);font-size:0.85rem;margin-bottom:14px">${p.sub}</div>`;
+  const waBtn=`<a class="wa-small" style="margin-bottom:14px;display:inline-flex" href="https://wa.me/966576784112?text=${encodeURIComponent(p.wa)}" target="_blank">${waSvg} استفسر على واتساب</a>`;
+  let options='';
+  if(p.sets){
+    options=`<div style="font-size:0.82rem;color:var(--text2);margin-bottom:10px;font-weight:600">اختر الخيار وأضفه للسلة:</div>`;
+    options+=p.sets.map(s=>`
+      <div class="pm-set-item">
+        <span class="pm-set-name">${s.name}</span>
+        <button class="pm-set-add" id="pmBtn-${s.id}" onclick="addSetToCart(${p.id},'${s.id}')">+ سلة</button>
+      </div>`).join('');
+  } else {
+    options=`<button class="pm-single-add" onclick="addToCart(${p.id})">+ أضف للسلة</button>`;
+  }
+  body.innerHTML=slider+badge+sub+waBtn+options;
+  document.getElementById('productOverlay').classList.add('open');
+}
+function closeProductModal(){document.getElementById('productOverlay').classList.remove('open');}
+function pmSlide(id,dir){
+  const p=products.find(x=>x.id===id); if(!p)return;
+  sliderIdx['pm'+id]=((sliderIdx['pm'+id]||0)+dir+p.images.length)%p.images.length;
+  const s=document.getElementById('pmSlides-'+id);
+  if(s)s.style.transform=`translateX(${sliderIdx['pm'+id]*100}%)`;
+}
+
+// CART
+function addToCart(id){
+  if(!currentUser){showToast('سجّل دخولك أولاً 🔒');openAuth();return;}
+  if(cart.find(x=>x.cartId==='p'+id)){showToast('موجود بالسلة ✓');return;}
+  const p=products.find(x=>x.id===id);
+  cart.push({cartId:'p'+id,name:p.brand+' - '+p.name,sub:p.sub,price:p.price});
+  updateCartCount();
+  const btn=document.getElementById('addBtn-'+id);
+  if(btn){btn.textContent='✓';btn.classList.add('added');setTimeout(()=>{btn.textContent='+ سلة';btn.classList.remove('added');},2000);}
+  showToast('أضيف للسلة 🛒');
+}
+function addSetToCart(pid,sid){
+  if(!currentUser){showToast('سجّل دخولك أولاً 🔒');openAuth();return;}
+  if(cart.find(x=>x.cartId===sid)){showToast('موجود بالسلة ✓');return;}
+  const p=products.find(x=>x.id===pid),s=p.sets.find(x=>x.id===sid);
+  cart.push({cartId:sid,name:p.brand+' - '+p.name,sub:s.name,price:s.price});
+  updateCartCount();
+  const btn=document.getElementById('setBtn-'+sid);
+  if(btn){btn.textContent='✓';btn.classList.add('added');setTimeout(()=>{btn.textContent='+ سلة';btn.classList.remove('added');},2000);}
+  showToast('أضيف للسلة 🛒');
+}
+function removeFromCart(cid){cart=cart.filter(x=>x.cartId!==cid);updateCartCount();renderCart();}
+function updateCartCount(){document.getElementById('cartCount').textContent=cart.length;}
+
+// AUTH
+function openAuth(){document.getElementById('authOverlay').classList.add('open');renderAuthForm();}
+function closeAuth(){document.getElementById('authOverlay').classList.remove('open');}
+function switchTab(tab){
+  currentTab=tab;
+  document.getElementById('tabLogin').className='auth-tab'+(tab==='login'?' active':'');
+  document.getElementById('tabRegister').className='auth-tab'+(tab==='register'?' active':'');
+  renderAuthForm();
+}
+function renderAuthForm(){
+  const d=document.getElementById('authForm');
+  if(currentTab==='login'){
+    d.innerHTML=`
+      <div class="form-group"><label>رقم الجوال أو الإيميل</label><input type="text" id="loginId" placeholder="0500000000 أو email@gmail.com"></div>
+      <div class="form-group"><label>كلمة المرور</label><input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="submit-btn" onclick="doLogin()">تسجيل الدخول</button><div id="authMsg"></div>`;
+  } else {
+    d.innerHTML=`
+      <div class="form-group"><label>الاسم الكامل</label><input type="text" id="regName" placeholder="محمد العتيبي"></div>
+      <div class="form-group"><label>رقم الجوال</label><input type="tel" id="regPhone" placeholder="05XXXXXXXX"></div>
+      <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="regEmail" placeholder="example@gmail.com"></div>
+      <div class="form-group"><label>كلمة المرور</label><input type="password" id="regPass" placeholder="••••••••"></div>
+      <button class="submit-btn" onclick="doRegister()">إنشاء الحساب</button><div id="authMsg"></div>`;
+  }
+}
+function doLogin(){
+  const id=document.getElementById('loginId').value.trim(),pass=document.getElementById('loginPass').value;
+  const msg=document.getElementById('authMsg');
+  if(!id||!pass){msg.className='form-error';msg.textContent='الرجاء تعبئة جميع الحقول';return;}
+  const user=users.find(u=>(u.phone===id||u.email===id)&&u.password===pass);
+  if(!user){msg.className='form-error';msg.textContent='بيانات الدخول غير صحيحة';return;}
+  currentUser=user;localStorage.setItem('autoUser',JSON.stringify(user));
+  updateUserArea();closeAuth();showToast('أهلاً '+user.name+' 👋');
+}
+function doRegister(){
+  const name=document.getElementById('regName').value.trim(),phone=document.getElementById('regPhone').value.trim();
+  const email=document.getElementById('regEmail').value.trim(),pass=document.getElementById('regPass').value;
+  const msg=document.getElementById('authMsg');
+  if(!name||!phone||!email||!pass){msg.className='form-error';msg.textContent='الرجاء تعبئة جميع الحقول';return;}
+  if(!/^05\d{8}$/.test(phone)){msg.className='form-error';msg.textContent='رقم الجوال غير صحيح (مثال: 0512345678)';return;}
+  if(!/\S+@\S+\.\S+/.test(email)){msg.className='form-error';msg.textContent='البريد الإلكتروني غير صحيح';return;}
+  if(users.find(u=>u.phone===phone||u.email===email)){msg.className='form-error';msg.textContent='رقم الجوال أو الإيميل مسجل مسبقاً';return;}
+  const user={name,phone,email,password:pass};
+  users.push(user);localStorage.setItem('autoUsers',JSON.stringify(users));
+  currentUser=user;localStorage.setItem('autoUser',JSON.stringify(user));
+  updateUserArea();closeAuth();showToast('تم إنشاء حسابك 🎉');
+}
+function logout(){currentUser=null;localStorage.removeItem('autoUser');cart=[];updateCartCount();updateUserArea();showToast('تم تسجيل الخروج');}
+function updateUserArea(){
+  const a=document.getElementById('userArea');
+  if(currentUser){
+    a.innerHTML=`<div class="user-info-bar"><div class="user-dot"></div><span>${currentUser.name}</span><button class="logout-link" onclick="logout()">خروج</button></div>`;
+  } else {
+    a.innerHTML=`<button class="user-btn" onclick="openAuth()">تسجيل الدخول</button>`;
+  }
+}
+
+// CART MODAL
+function openCart(){document.getElementById('cartOverlay').classList.add('open');renderCart();}
+function closeCart(){document.getElementById('cartOverlay').classList.remove('open');}
+function renderCart(){
+  const body=document.getElementById('cartBody');
+  if(!cart.length){body.innerHTML=`<div class="cart-empty">🛒<br><br>السلة فارغة<br><small style="color:var(--text2)">أضف منتجات للمتابعة</small></div>`;return;}
+  body.innerHTML=`
+    <div>${cart.map(item=>`
+      <div class="cart-item">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${item.name}</div>
+          <div class="cart-item-sub">${item.sub}</div>
+        </div>
+        <div class="cart-item-price">${item.price==='استفسر'?'عند التأكيد':item.price+' ر.س'}</div>
+        <button class="remove-item" onclick="removeFromCart('${item.cartId}')">✕</button>
+      </div>`).join('')}</div>
+    <div class="cart-summary">
+      <div class="cart-total"><span>إجمالي المنتجات</span><span>${cart.length} منتج</span></div>
+      <p style="font-size:0.76rem;color:var(--text2);margin-top:5px">سيتم تأكيد الأسعار عند المراجعة</p>
+    </div>
+    ${currentUser?`
+      <div class="checkout-section">
+        <h3>بيانات التوصيل</h3>
+        <div class="form-group"><label>الاسم</label><input type="text" id="ckName" value="${currentUser.name}"></div>
+        <div class="form-group"><label>رقم الجوال</label><input type="tel" id="ckPhone" value="${currentUser.phone}"></div>
+        <div class="form-group"><label>المدينة</label><input type="text" id="ckCity" placeholder="الرياض، جدة..."></div>
+        <div class="form-group"><label>العنوان</label><input type="text" id="ckAddress" placeholder="الحي، الشارع، رقم المبنى"></div>
+        <div class="form-group"><label>ملاحظات (اختياري)</label><input type="text" id="ckNotes" placeholder="أي تفاصيل إضافية"></div>
+        <button class="submit-btn" id="checkoutBtn" onclick="submitOrder()">✅ تأكيد الطلب</button>
+        <div id="checkoutMsg"></div>
+      </div>`:`<button class="submit-btn" onclick="closeCart();openAuth()">سجّل دخولك لإتمام الطلب</button>`}`;
+}
+
+// ORDER
+async function submitOrder(){
+  const name=document.getElementById('ckName').value.trim(),phone=document.getElementById('ckPhone').value.trim();
+  const city=document.getElementById('ckCity').value.trim(),address=document.getElementById('ckAddress').value.trim();
+  const notes=document.getElementById('ckNotes').value.trim();
+  const msg=document.getElementById('checkoutMsg'),btn=document.getElementById('checkoutBtn');
+  if(!name||!phone||!city||!address){msg.className='form-error';msg.textContent='الرجاء تعبئة بيانات التوصيل كاملة';return;}
+  btn.disabled=true;btn.textContent='جاري إرسال الطلب...';
+  const orderTime=new Date().toLocaleString('ar-SA',{timeZone:'Asia/Riyadh'});
+  const orderItems=cart.map(i=>`• ${i.name} - ${i.sub}`).join('\n');
+  try{
+    const fd=new FormData();
+    fd.append('_to','YOUSOO00122@GMAIL.COM');
+    fd.append('_subject',`🚗 طلب جديد من ${name} - ${city}`);
+    fd.append('_captcha','false');fd.append('_template','table');
+    fd.append('الاسم',name);fd.append('الجوال',phone);fd.append('الإيميل',currentUser.email);
+    fd.append('المنتجات',orderItems);fd.append('المدينة',city);fd.append('العنوان',address);
+    fd.append('الملاحظات',notes||'لا توجد');fd.append('وقت الطلب',orderTime);
+    fd.append('واتساب',`https://wa.me/966${phone.replace(/^0/,'')}`);
+    await fetch('https://formsubmit.co/YOUSOO00122@GMAIL.COM',{method:'POST',body:fd});
+  }catch(e){}
+  const waMsg=encodeURIComponent(`طلب جديد:\nالاسم: ${name}\nجوال: ${phone}\nالمدينة: ${city}\n\nالمنتجات:\n${orderItems}`);
+  cart=[];updateCartCount();
+  document.getElementById('cartBody').innerHTML=`
+    <div class="success-screen">
+      <div class="success-icon">✅</div>
+      <h2>تم استلام طلبك!</h2>
+      <p>شكراً ${name}! 🎉<br>سيتواصل معك صاحب المتجر<br>على جوالك قريباً لتأكيد الأسعار.</p>
+      <a class="wa-success" href="https://wa.me/966576784112?text=${waMsg}" target="_blank">📱 تابع على واتساب</a>
+    </div>`;
+}
+
+// TOAST
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+
+// INIT
+document.getElementById('authOverlay').addEventListener('click',function(e){if(e.target===this)closeAuth();});
+document.getElementById('cartOverlay').addEventListener('click',function(e){if(e.target===this)closeCart();});
+document.getElementById('productOverlay').addEventListener('click',function(e){if(e.target===this)closeProductModal();});
+renderProducts(products);
+updateUserArea();
+</script>
+</body>
+</html>
