@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARTS1998 — لوحة الإدارة</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #2a2a2a;
+    --accent: #c9a84c;
+    --accent2: #e8c96a;
+    --text: #f0f0f0;
+    --text2: #888;
+    --danger: #e05555;
+    --success: #4caf7d;
+    --bmw: #1c69d4;
+    --merc: #aaa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans Arabic',sans-serif; min-height:100vh; }
+
+  /* LOGIN */
+  #login-screen {
+    display:flex; align-items:center; justify-content:center;
+    min-height:100vh;
+    background: radial-gradient(ellipse at 50% 0%, #1a1200 0%, #0a0a0a 70%);
+  }
+  .login-box {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-top:2px solid var(--accent);
+    padding:3rem 2.5rem;
+    width:360px;
+    position:relative;
+  }
+  .login-box::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0; height:1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+  .login-logo {
+    text-align:center; margin-bottom:2rem;
+  }
+  .login-logo span {
+    font-family:'Space Mono',monospace;
+    font-size:1.5rem; font-weight:700;
+    color:var(--accent);
+    letter-spacing:2px;
+  }
+  .login-logo p { color:var(--text2); font-size:.8rem; margin-top:.3rem; }
+  .login-box label { display:block; font-size:.8rem; color:var(--text2); margin-bottom:.4rem; }
+  .login-box input[type=password] {
+    width:100%; padding:.8rem 1rem;
+    background:var(--bg); border:1px solid var(--border);
+    color:var(--text); font-family:inherit; font-size:1rem;
+    outline:none; transition:.2s;
+    margin-bottom:1.2rem;
+  }
+  .login-box input[type=password]:focus { border-color:var(--accent); }
+  .btn-login {
+    width:100%; padding:.9rem;
+    background:var(--accent); color:#000;
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    font-size:1rem; font-weight:700;
+    border:none; cursor:pointer; transition:.2s;
+  }
+  .btn-login:hover { background:var(--accent2); }
+  .login-err { color:var(--danger); font-size:.85rem; text-align:center; margin-top:.8rem; display:none; }
+
+  /* MAIN LAYOUT */
+  #app { display:none; min-height:100vh; }
+  .sidebar {
+    position:fixed; top:0; right:0; bottom:0; width:220px;
+    background:var(--surface); border-left:1px solid var(--border);
+    display:flex; flex-direction:column; z-index:100;
+  }
+  .sidebar-logo {
+    padding:1.5rem 1.2rem 1rem;
+    border-bottom:1px solid var(--border);
+  }
+  .sidebar-logo span {
+    font-family:'Space Mono',monospace;
+    font-size:1.1rem; color:var(--accent); font-weight:700;
+  }
+  .sidebar-logo p { font-size:.7rem; color:var(--text2); margin-top:.2rem; }
+  .nav { flex:1; padding:1rem 0; }
+  .nav-item {
+    display:flex; align-items:center; gap:.7rem;
+    padding:.7rem 1.2rem; cursor:pointer;
+    font-size:.9rem; color:var(--text2);
+    transition:.15s; border-right:2px solid transparent;
+    user-select:none;
+  }
+  .nav-item:hover { color:var(--text); background:var(--surface2); }
+  .nav-item.active { color:var(--accent); border-right-color:var(--accent); background:var(--surface2); }
+  .nav-item .ico { font-size:1rem; width:20px; text-align:center; }
+  .sidebar-bottom {
+    padding:1rem 1.2rem;
+    border-top:1px solid var(--border);
+  }
+  .btn-logout {
+    width:100%; padding:.6rem;
+    background:transparent; border:1px solid var(--border);
+    color:var(--text2); font-family:inherit; font-size:.85rem;
+    cursor:pointer; transition:.2s;
+  }
+  .btn-logout:hover { border-color:var(--danger); color:var(--danger); }
+
+  .main { margin-right:220px; padding:2rem; }
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* PAGE HEADER */
+  .page-header { margin-bottom:2rem; }
+  .page-header h1 { font-size:1.6rem; font-weight:700; color:var(--text); }
+  .page-header p { color:var(--text2); font-size:.9rem; margin-top:.3rem; }
+
+  /* STAT CARDS */
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .stat-card {
+    background:var(--surface); border:1px solid var(--border);
+    padding:1.3rem 1.5rem; position:relative; overflow:hidden;
+  }
+  .stat-card::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:2px;
+    background:var(--accent);
+  }
+  .stat-card .stat-label { font-size:.75rem; color:var(--text2); margin-bottom:.5rem; text-transform:uppercase; letter-spacing:1px; }
+  .stat-card .stat-val { font-family:'Space Mono',monospace; font-size:2rem; font-weight:700; color:var(--accent); }
+  .stat-card .stat-sub { font-size:.75rem; color:var(--text2); margin-top:.3rem; }
+
+  /* TABLES */
+  .table-wrap { background:var(--surface); border:1px solid var(--border); overflow:hidden; }
+  .table-toolbar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1rem 1.2rem; border-bottom:1px solid var(--border);
+  }
+  .table-toolbar h3 { font-size:1rem; font-weight:600; }
+  table { width:100%; border-collapse:collapse; }
+  th {
+    text-align:right; padding:.7rem 1rem;
+    background:var(--surface2); border-bottom:1px solid var(--border);
+    font-size:.75rem; color:var(--text2); font-weight:500;
+    text-transform:uppercase; letter-spacing:.5px;
+  }
+  td { padding:.8rem 1rem; border-bottom:1px solid #1e1e1e; font-size:.9rem; vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:var(--surface2); }
+  .stars { color:var(--accent); }
+  .badge {
+    display:inline-block; padding:.2rem .6rem;
+    font-size:.7rem; font-family:'Space Mono',monospace;
+    border:1px solid;
+  }
+  .badge.bmw { color:var(--bmw); border-color:var(--bmw); }
+  .badge.mercedes { color:var(--merc); border-color:var(--merc); }
+  .btn-del {
+    background:transparent; border:1px solid var(--danger);
+    color:var(--danger); padding:.3rem .7rem;
+    font-size:.75rem; cursor:pointer; font-family:inherit;
+    transition:.15s;
+  }
+  .btn-del:hover { background:var(--danger); color:#fff; }
+  .btn-edit {
+    background:transparent; border:1px solid var(--border);
+    color:var(--text2); padding:.3rem .7rem;
+    font-size:.75rem; cursor:pointer; font-family:inherit;
+    transition:.15s; margin-left:.4rem;
+  }
+  .btn-edit:hover { border-color:var(--accent); color:var(--accent); }
+  .empty-row td { text-align:center; color:var(--text2); padding:2rem; }
+
+  /* BTN PRIMARY */
+  .btn-primary {
+    background:var(--accent); color:#000;
+    border:none; padding:.6rem 1.2rem;
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    font-size:.85rem; font-weight:700; cursor:pointer; transition:.15s;
+  }
+  .btn-primary:hover { background:var(--accent2); }
+
+  /* MODAL */
+  .modal-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.8); z-index:999;
+    align-items:center; justify-content:center;
+  }
+  .modal-overlay.open { display:flex; }
+  .modal {
+    background:var(--surface); border:1px solid var(--border);
+    border-top:2px solid var(--accent);
+    width:500px; max-width:95vw;
+    padding:2rem; position:relative;
+    max-height:90vh; overflow-y:auto;
+  }
+  .modal h2 { font-size:1.2rem; margin-bottom:1.5rem; }
+  .modal-close {
+    position:absolute; top:1rem; left:1rem;
+    background:none; border:none; color:var(--text2);
+    font-size:1.3rem; cursor:pointer;
+  }
+  .form-group { margin-bottom:1rem; }
+  .form-group label { display:block; font-size:.8rem; color:var(--text2); margin-bottom:.4rem; }
+  .form-group input, .form-group select, .form-group textarea {
+    width:100%; padding:.7rem .9rem;
+    background:var(--bg); border:1px solid var(--border);
+    color:var(--text); font-family:inherit; font-size:.9rem; outline:none;
+    transition:.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--accent); }
+  .form-group textarea { resize:vertical; min-height:80px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  .form-actions { display:flex; gap:.8rem; margin-top:1.5rem; justify-content:flex-end; }
+  .btn-cancel {
+    background:transparent; border:1px solid var(--border);
+    color:var(--text2); padding:.6rem 1.2rem;
+    font-family:inherit; font-size:.85rem; cursor:pointer;
+  }
+  .btn-cancel:hover { border-color:var(--text2); color:var(--text); }
+
+  /* SETTINGS */
+  .settings-card {
+    background:var(--surface); border:1px solid var(--border);
+    padding:1.5rem; margin-bottom:1rem;
+  }
+  .settings-card h3 { font-size:1rem; margin-bottom:1.2rem; padding-bottom:.7rem; border-bottom:1px solid var(--border); }
+  .setting-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:.7rem 0; border-bottom:1px solid #1a1a1a;
+  }
+  .setting-row:last-child { border-bottom:none; }
+  .setting-row label { font-size:.9rem; color:var(--text2); }
+  .setting-row input {
+    background:var(--bg); border:1px solid var(--border);
+    color:var(--text); padding:.5rem .8rem;
+    font-family:inherit; font-size:.85rem; outline:none; width:260px;
+  }
+  .setting-row input:focus { border-color:var(--accent); }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:2rem; left:50%; transform:translateX(-50%) translateY(100px);
+    background:var(--surface2); border:1px solid var(--border);
+    border-right:3px solid var(--success);
+    padding:.7rem 1.4rem; font-size:.9rem;
+    transition:transform .3s; z-index:9999;
+    pointer-events:none;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+  .toast.err { border-right-color:var(--danger); }
+
+  /* LOADING */
+  .loading { text-align:center; padding:2rem; color:var(--text2); }
+  .spinner {
+    display:inline-block; width:20px; height:20px;
+    border:2px solid var(--border); border-top-color:var(--accent);
+    border-radius:50%; animation:spin .7s linear infinite; margin-left:.5rem;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <span>PARTS1998</span>
+      <p>لوحة الإدارة — Admin Panel</p>
+    </div>
+    <label>كلمة المرور</label>
+    <input type="password" id="pw-input" placeholder="••••••••••" />
+    <button class="btn-login" onclick="doLogin()">دخول</button>
+    <div class="login-err" id="login-err">كلمة المرور غلط!</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <span>PARTS1998</span>
+      <p>Admin Panel</p>
+    </div>
+    <div class="nav">
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <span class="ico">📊</span> الرئيسية
+      </div>
+      <div class="nav-item" onclick="showPage('products')">
+        <span class="ico">🔧</span> المنتجات
+      </div>
+      <div class="nav-item" onclick="showPage('reviews')">
+        <span class="ico">⭐</span> المراجعات
+      </div>
+      <div class="nav-item" onclick="showPage('settings')">
+        <span class="ico">⚙️</span> الإعدادات
+      </div>
+    </div>
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="doLogout()">تسجيل خروج</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1>لوحة التحكم</h1>
+        <p>مرحبا! هنا نظرة عامة على الموقع.</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">إجمالي المنتجات</div>
+          <div class="stat-val" id="stat-products">—</div>
+          <div class="stat-sub">BMW + Mercedes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">إجمالي المراجعات</div>
+          <div class="stat-val" id="stat-reviews">—</div>
+          <div class="stat-sub">من العملاء</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">متوسط التقييم</div>
+          <div class="stat-val" id="stat-rating">—</div>
+          <div class="stat-sub">من 5 نجوم</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">منتجات BMW</div>
+          <div class="stat-val" id="stat-bmw">—</div>
+          <div class="stat-sub">قطعة</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar"><h3>آخر المراجعات</h3></div>
+        <table>
+          <thead><tr><th>الاسم</th><th>التقييم</th><th>التعليق</th><th>التاريخ</th></tr></thead>
+          <tbody id="dash-reviews-body"><tr class="empty-row"><td colspan="4"><span class="spinner"></span></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="page" id="page-products">
+      <div class="page-header">
+        <h1>المنتجات</h1>
+        <p>إدارة قطع غيار BMW و Mercedes</p>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <h3>قائمة المنتجات</h3>
+          <button class="btn-primary" onclick="openProductModal()">+ إضافة منتج</button>
+        </div>
+        <table>
+          <thead><tr><th>الاسم</th><th>الماركة</th><th>الموديل</th><th>السعر (ر.س)</th><th>الوصف</th><th>إجراءات</th></tr></thead>
+          <tbody id="products-body"><tr class="empty-row"><td colspan="6"><span class="spinner"></span></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="page" id="page-reviews">
+      <div class="page-header">
+        <h1>المراجعات</h1>
+        <p>إدارة تقييمات العملاء</p>
+      </div>
+      <div class="table-wrap">
+        <div class="table-toolbar"><h3>كل المراجعات</h3></div>
+        <table>
+          <thead><tr><th>الاسم</th><th>التقييم</th><th>التعليق</th><th>الصورة</th><th>التاريخ</th><th>حذف</th></tr></thead>
+          <tbody id="reviews-body"><tr class="empty-row"><td colspan="6"><span class="spinner"></span></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="page-header">
+        <h1>الإعدادات</h1>
+        <p>إعدادات الموقع العامة</p>
+      </div>
+      <div class="settings-card">
+        <h3>معلومات الموقع</h3>
+        <div class="setting-row">
+          <label>اسم الموقع</label>
+          <input type="text" id="set-name" value="PARTS1998" />
+        </div>
+        <div class="setting-row">
+          <label>رقم واتساب</label>
+          <input type="text" id="set-whatsapp" value="+966500000000" />
+        </div>
+        <div class="setting-row">
+          <label>العنوان</label>
+          <input type="text" id="set-address" value="الرياض، الخروج 15، بجانب مسجد الراجحي" />
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3>الأمان</h3>
+        <div class="setting-row">
+          <label>كلمة مرور جديدة للأدمن</label>
+          <input type="password" id="set-pw" placeholder="اتركه فارغاً إذا ما تبي تغيير" />
+        </div>
+      </div>
+      <button class="btn-primary" onclick="saveSettings()">حفظ الإعدادات</button>
+    </div>
+  </main>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('product-modal')">✕</button>
+    <h2 id="modal-title">إضافة منتج جديد</h2>
+    <input type="hidden" id="edit-id" />
+    <div class="form-row">
+      <div class="form-group">
+        <label>اسم المنتج *</label>
+        <input type="text" id="p-name" placeholder="مثال: فلتر هواء" />
+      </div>
+      <div class="form-group">
+        <label>الماركة *</label>
+        <select id="p-brand">
+          <optgroup label="🇩🇪 ألمانية">
+            <option>BMW</option><option>Mercedes-Benz</option><option>Audi</option>
+            <option>Volkswagen</option><option>Porsche</option><option>Opel</option>
+          </optgroup>
+          <optgroup label="🇯🇵 يابانية">
+            <option>Toyota</option><option>Honda</option><option>Nissan</option>
+            <option>Mazda</option><option>Mitsubishi</option><option>Subaru</option>
+            <option>Lexus</option><option>Infiniti</option><option>Suzuki</option>
+          </optgroup>
+          <optgroup label="🇺🇸 أمريكية">
+            <option>Ford</option><option>Chevrolet</option><option>Dodge</option>
+            <option>Jeep</option><option>Cadillac</option><option>GMC</option>
+            <option>Lincoln</option><option>Tesla</option>
+          </optgroup>
+          <optgroup label="🇬🇧 بريطانية">
+            <option>Land Rover</option><option>Range Rover</option><option>Jaguar</option>
+            <option>Bentley</option><option>Rolls-Royce</option><option>Mini</option>
+          </optgroup>
+          <optgroup label="🇮🇹 إيطالية">
+            <option>Ferrari</option><option>Lamborghini</option><option>Maserati</option>
+            <option>Alfa Romeo</option><option>Fiat</option>
+          </optgroup>
+          <optgroup label="🇫🇷 فرنسية">
+            <option>Peugeot</option><option>Renault</option><option>Citroën</option>
+          </optgroup>
+          <optgroup label="🇰🇷 كورية">
+            <option>Hyundai</option><option>Kia</option><option>Genesis</option>
+          </optgroup>
+          <optgroup label="🇸🇪 سويدية">
+            <option>Volvo</option><option>Saab</option>
+          </optgroup>
+          <optgroup label="🇨🇳 صينية">
+            <option>BYD</option><option>Geely</option><option>Haval</option><option>MG</option>
+          </optgroup>
+          <optgroup label="أخرى"><option>أخرى</option></optgroup>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>الموديل</label>
+        <input type="text" id="p-model" placeholder="مثال: E46 / W204" />
+      </div>
+      <div class="form-group">
+        <label>السعر (ر.س)</label>
+        <input type="number" id="p-price" placeholder="0" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>الوصف</label>
+      <textarea id="p-desc" placeholder="وصف مختصر للقطعة..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>رابط الصورة</label>
+      <input type="text" id="p-img" placeholder="https://..." />
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeModal('product-modal')">إلغاء</button>
+      <button class="btn-primary" onclick="saveProduct()">حفظ المنتج</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://mmpwirurazzhzfkbuflm.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_4HWGG6kDhejVkaDd-19bqA_4nEaJmdh';
+const ADMIN_PASS = 'parts1998';
+
+// ---- AUTH ----
+function doLogin() {
+  const v = document.getElementById('pw-input').value;
+  if (v === ADMIN_PASS) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+function doLogout() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('pw-input').value = '';
+}
+
+// ---- NAVIGATION ----
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (p === 'products') loadProducts();
+  if (p === 'reviews') loadReviews();
+}
+
+// ---- SUPABASE HELPERS ----
+async function sbGet(table, select='*', extra='') {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=${select}${extra}`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  return r.json();
+}
+async function sbDelete(table, id) {
+  return fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+}
+async function sbInsert(table, data) {
+  return fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json', 'Prefer': 'return=representation'
+    },
+    body: JSON.stringify(data)
+  });
+}
+async function sbUpdate(table, id, data) {
+  return fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+}
+
+// ---- PRODUCTS TABLE (create if not exists via insert) ----
+let productsCache = [];
+async function loadProducts() {
+  const tbody = document.getElementById('products-body');
+  tbody.innerHTML = '<tr class="empty-row"><td colspan="6"><span class="spinner"></span></td></tr>';
+  try {
+    const data = await sbGet('products');
+    productsCache = Array.isArray(data) ? data : [];
+    renderProducts(productsCache);
+    updateStats(productsCache);
+  } catch(e) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">⚠️ تأكد من إنشاء جدول products في Supabase</td></tr>';
+  }
+}
+function renderProducts(data) {
+  const tbody = document.getElementById('products-body');
+  if (!data.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">لا توجد منتجات بعد</td></tr>'; return;
+  }
+  tbody.innerHTML = data.map(p => `
+    <tr>
+      <td><strong>${p.name||''}</strong></td>
+      <td><span class="badge ${(p.brand||'').toLowerCase()}">${p.brand||''}</span></td>
+      <td>${p.model||'—'}</td>
+      <td>${p.price ? p.price+' ر.س' : '—'}</td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.description||'—'}</td>
+      <td>
+        <button class="btn-edit" onclick="editProduct(${p.id})">تعديل</button>
+        <button class="btn-del" onclick="deleteProduct(${p.id})">حذف</button>
+      </td>
+    </tr>
+  `).join('');
+}
+function updateStats(products) {
+  document.getElementById('stat-products').textContent = products.length;
+  document.getElementById('stat-bmw').textContent = products.filter(p=>p.brand==='BMW').length;
+}
+
+// ---- REVIEWS ----
+let reviewsCache = [];
+async function loadReviews() {
+  const tbody = document.getElementById('reviews-body');
+  tbody.innerHTML = '<tr class="empty-row"><td colspan="6"><span class="spinner"></span></td></tr>';
+  const data = await sbGet('reviews', '*', '&order=created_at.desc');
+  reviewsCache = Array.isArray(data) ? data : [];
+  renderReviews(reviewsCache);
+  // dash
+  const dash = document.getElementById('dash-reviews-body');
+  const recent = reviewsCache.slice(0,5);
+  dash.innerHTML = recent.length ? recent.map(r=>`
+    <tr>
+      <td>${r.NAME||''}</td>
+      <td class="stars">${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</td>
+      <td>${r.comment||'—'}</td>
+      <td>${r.created_at ? new Date(r.created_at).toLocaleDateString('ar-SA') : '—'}</td>
+    </tr>
+  `).join('') : '<tr class="empty-row"><td colspan="4">لا توجد مراجعات</td></tr>';
+  // stats
+  document.getElementById('stat-reviews').textContent = reviewsCache.length;
+  const avg = reviewsCache.length ? (reviewsCache.reduce((s,r)=>s+(r.rating||0),0)/reviewsCache.length).toFixed(1) : '—';
+  document.getElementById('stat-rating').textContent = avg;
+}
+function renderReviews(data) {
+  const tbody = document.getElementById('reviews-body');
+  if (!data.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="6">لا توجد مراجعات</td></tr>'; return;
+  }
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td>${r.NAME||''}</td>
+      <td class="stars">${'★'.repeat(r.rating||0)}${'☆'.repeat(5-(r.rating||0))}</td>
+      <td style="max-width:220px">${r.comment||'—'}</td>
+      <td>${r.image_url ? `<a href="${r.image_url}" target="_blank" style="color:var(--accent)">عرض</a>` : '—'}</td>
+      <td>${r.created_at ? new Date(r.created_at).toLocaleDateString('ar-SA') : '—'}</td>
+      <td><button class="btn-del" onclick="deleteReview(${r.id})">حذف</button></td>
+    </tr>
+  `).join('');
+}
+async function deleteReview(id) {
+  if (!confirm('تأكيد حذف المراجعة؟')) return;
+  await sbDelete('reviews', id);
+  showToast('تم حذف المراجعة');
+  loadReviews();
+}
+
+// ---- PRODUCT MODAL ----
+function openProductModal(reset=true) {
+  if(reset) {
+    document.getElementById('modal-title').textContent = 'إضافة منتج جديد';
+    document.getElementById('edit-id').value = '';
+    ['p-name','p-model','p-price','p-desc','p-img'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('p-brand').value = 'BMW';
+  }
+  document.getElementById('product-modal').classList.add('open');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function editProduct(id) {
+  const p = productsCache.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('modal-title').textContent = 'تعديل المنتج';
+  document.getElementById('edit-id').value = id;
+  document.getElementById('p-name').value = p.name||'';
+  document.getElementById('p-brand').value = p.brand||'BMW';
+  document.getElementById('p-model').value = p.model||'';
+  document.getElementById('p-price').value = p.price||'';
+  document.getElementById('p-desc').value = p.description||'';
+  document.getElementById('p-img').value = p.image_url||'';
+  openProductModal(false);
+}
+async function saveProduct() {
+  const name = document.getElementById('p-name').value.trim();
+  if(!name) { showToast('أدخل اسم المنتج', true); return; }
+  const data = {
+    name, brand: document.getElementById('p-brand').value,
+    model: document.getElementById('p-model').value,
+    price: parseFloat(document.getElementById('p-price').value)||null,
+    description: document.getElementById('p-desc').value,
+    image_url: document.getElementById('p-img').value
+  };
+  const editId = document.getElementById('edit-id').value;
+  if(editId) {
+    await sbUpdate('products', editId, data);
+    showToast('تم تعديل المنتج ✓');
+  } else {
+    const r = await sbInsert('products', data);
+    if(r.ok) showToast('تم إضافة المنتج ✓');
+    else { showToast('خطأ! تأكد من وجود جدول products', true); closeModal('product-modal'); return; }
+  }
+  closeModal('product-modal');
+  loadProducts();
+}
+async function deleteProduct(id) {
+  if(!confirm('تأكيد حذف المنتج؟')) return;
+  await sbDelete('products', id);
+  showToast('تم حذف المنتج');
+  loadProducts();
+}
+
+// ---- SETTINGS ----
+function saveSettings() { showToast('تم حفظ الإعدادات ✓'); }
+
+// ---- LOAD ALL ----
+function loadAll() { loadReviews(); loadProducts(); }
+
+// ---- TOAST ----
+function showToast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (err?' err':'');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
