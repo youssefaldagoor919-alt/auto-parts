@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفاصيل المنتج</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0d;--surface:#161616;--surface2:#1e1e1e;--border:#2a2a2a;--gold:#c8a84b;--gold2:#e8c96b;--text:#f0ece4;--text2:#9a9590;--red:#e84040;--green:#3abf7a;--radius:12px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:200;background:rgba(13,13,13,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:14px;}
+.back-btn{display:flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 14px;font-family:'Cairo',sans-serif;font-size:0.88rem;cursor:pointer;transition:all 0.2s;text-decoration:none;white-space:nowrap;}
+.back-btn:hover{border-color:var(--gold);color:var(--gold);}
+.header-title{flex:1;font-size:1rem;font-weight:700;color:var(--gold);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.header-share{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:1rem;transition:all 0.2s;}
+.header-share:hover{border-color:var(--gold);color:var(--gold);}
+
+/* LOADING */
+.loading-screen{display:flex;align-items:center;justify-content:center;min-height:60vh;flex-direction:column;gap:16px;color:var(--text2);}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* MAIN */
+.product-page{max-width:960px;margin:0 auto;padding:24px 20px;}
+
+/* SLIDER */
+.slider-wrap{position:relative;border-radius:16px;overflow:hidden;background:#111;margin-bottom:24px;direction:ltr;}
+.slider-track{display:flex;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);}
+.slider-track img{width:100%;min-width:100%;max-height:460px;object-fit:cover;flex-shrink:0;display:block;cursor:zoom-in;}
+.slider-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.6);border:none;color:#fff;cursor:pointer;padding:12px 16px;font-size:1.1rem;transition:all 0.2s;z-index:5;}
+.slider-btn:hover{background:rgba(200,168,75,0.8);color:#000;}
+.slider-btn.prev{left:0;border-radius:0 8px 8px 0;}
+.slider-btn.next{right:0;border-radius:8px 0 0 8px;}
+.slider-dots{position:absolute;bottom:12px;width:100%;display:flex;justify-content:center;gap:6px;z-index:5;}
+.dot{height:7px;border-radius:4px;cursor:pointer;transition:all 0.25s;background:rgba(255,255,255,0.35);}
+.dot.active{background:var(--gold);width:20px !important;}
+.slider-count{position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.65);color:#fff;font-size:0.78rem;padding:4px 10px;border-radius:20px;}
+
+/* THUMBNAILS */
+.thumbs{display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px;}
+.thumbs::-webkit-scrollbar{display:none;}
+.thumb{width:72px;height:60px;border-radius:8px;object-fit:cover;cursor:pointer;border:2px solid transparent;transition:all 0.2s;flex-shrink:0;opacity:0.6;}
+.thumb.active{border-color:var(--gold);opacity:1;}
+.thumb:hover{opacity:0.9;}
+
+/* INFO */
+.product-info-page{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start;}
+@media(max-width:680px){.product-info-page{grid-template-columns:1fr;}}
+
+.info-left{}
+.brand-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(200,168,75,0.1);border:1px solid rgba(200,168,75,0.25);color:var(--gold);padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:700;margin-bottom:12px;}
+.product-title{font-size:1.6rem;font-weight:900;line-height:1.3;margin-bottom:8px;}
+.product-model-tag{color:var(--text2);font-size:0.9rem;margin-bottom:16px;}
+.product-desc{color:var(--text2);font-size:0.92rem;line-height:1.9;margin-bottom:20px;border-top:1px solid var(--border);padding-top:16px;}
+.product-meta{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.meta-row{display:flex;align-items:center;gap:8px;font-size:0.85rem;}
+.meta-label{color:var(--text2);width:80px;flex-shrink:0;}
+.meta-val{color:var(--text);font-weight:600;}
+
+/* PRICE BOX */
+.info-right{}
+.price-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;position:sticky;top:80px;}
+.price-main{font-size:2rem;font-weight:900;color:var(--gold);margin-bottom:4px;}
+.price-note{font-size:0.78rem;color:var(--text2);margin-bottom:20px;}
+.action-btns{display:flex;flex-direction:column;gap:10px;}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:9px;background:#25D366;color:#fff;border-radius:12px;padding:14px;text-decoration:none;font-weight:700;font-size:0.97rem;transition:opacity 0.2s;}
+.btn-wa:hover{opacity:0.88;}
+.btn-cart{background:var(--gold);color:#000;border:none;border-radius:12px;padding:14px;font-family:'Cairo',sans-serif;font-size:0.97rem;font-weight:700;cursor:pointer;transition:all 0.2s;width:100%;}
+.btn-cart:hover{background:var(--gold2);}
+.btn-cart.added{background:var(--green);color:#fff;}
+.btn-share{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px;font-family:'Cairo',sans-serif;font-size:0.9rem;cursor:pointer;transition:all 0.2s;width:100%;}
+.btn-share:hover{border-color:var(--gold);color:var(--gold);}
+
+/* SIMILAR PRODUCTS */
+.similar-section{margin-top:48px;}
+.section-hdr{font-size:1.15rem;font-weight:700;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.section-hdr::before{content:'';display:block;width:4px;height:20px;background:var(--gold);border-radius:4px;}
+.similar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.similar-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.25s;text-decoration:none;display:block;color:var(--text);}
+.similar-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:0 8px 28px rgba(200,168,75,0.1);}
+.similar-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#111;}
+.similar-info{padding:10px 12px;}
+.similar-badge{font-size:0.65rem;color:var(--gold);font-weight:700;margin-bottom:4px;}
+.similar-name{font-size:0.85rem;font-weight:700;margin-bottom:2px;line-height:1.4;}
+.similar-price{font-size:0.82rem;color:var(--gold);font-weight:700;}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.lightbox.open{opacity:1;pointer-events:all;}
+.lightbox img{max-width:95vw;max-height:92vh;object-fit:contain;border-radius:4px;}
+.lightbox-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.lightbox-close:hover{background:var(--red);}
+.lightbox-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:#fff;padding:14px 18px;cursor:pointer;font-size:1.1rem;border-radius:8px;transition:all 0.2s;}
+.lightbox-btn:hover{background:rgba(200,168,75,0.6);}
+.lightbox-btn.lp{left:16px;}
+.lightbox-btn.ln{right:16px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface2);border:1px solid var(--gold);color:var(--text);border-radius:50px;padding:11px 22px;font-size:0.88rem;font-weight:600;z-index:1000;transition:transform 0.3s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+footer{border-top:1px solid var(--border);padding:24px;text-align:center;color:var(--text2);font-size:0.8rem;margin-top:20px;}
+footer a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back-btn" href="index.html">&#8594; رجوع</a>
+  <span class="header-title" id="headerTitle">تفاصيل المنتج</span>
+  <button class="header-share" onclick="shareProduct()" title="مشاركة">📤</button>
+</header>
+
+<div id="appBody">
+  <div class="loading-screen">
+    <div class="spinner"></div>
+    <div>جاري تحميل المنتج...</div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-btn lp" onclick="event.stopPropagation();lbSlide(-1)">❮</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lightbox-btn ln" onclick="event.stopPropagation();lbSlide(1)">❯</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL='https://mmpwirurazzhzfkbuflm.supabase.co';
+const SUPABASE_KEY='sb_publishable_4HWGG6kDhejVkaDd-19bqA_4nEaJmdh';
+
+let product=null, allProducts=[], imgs=[], sliderI=0, lbI=0;
+let cart=JSON.parse(localStorage.getItem('autoCart')||'[]');
+let currentUser=JSON.parse(localStorage.getItem('autoUser')||'null');
+
+const waSvg=`<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+// GET PRODUCT ID FROM URL
+const params=new URLSearchParams(location.search);
+const productId=parseInt(params.get('id'));
+
+async function init(){
+  if(!productId){
+    document.getElementById('appBody').innerHTML=`<div class="loading-screen"><div style="font-size:3rem">🔍</div><div>لم يتم تحديد منتج</div><a href="index.html" style="color:var(--gold);margin-top:8px">رجوع للمتجر</a></div>`;
+    return;
+  }
+  try{
+    const res=await fetch(`${SUPABASE_URL}/rest/v1/products?select=*&order=created_at.desc`,{
+      headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}
+    });
+    allProducts=await res.json();
+    product=allProducts.find(p=>p.id===productId);
+    if(!product){
+      document.getElementById('appBody').innerHTML=`<div class="loading-screen"><div style="font-size:3rem">😕</div><div>المنتج غير موجود</div><a href="index.html" style="color:var(--gold);margin-top:8px">رجوع للمتجر</a></div>`;
+      return;
+    }
+    // parse images
+    try{imgs=product.images?JSON.parse(product.images):[];}catch(e){}
+    if(!imgs.length&&product.image_url) imgs=[product.image_url];
+    if(!imgs.length) imgs=['data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'><rect fill=\'%23181818\' width=\'400\' height=\'300\'/><text x=\'50%25\' y=\'50%25\' fill=\'%23555\' text-anchor=\'middle\' dominant-baseline=\'middle\' font-size=\'16\'>صورة قريباً</text></svg>'];
+
+    document.title=product.name+' | متجر قطع غيار';
+    document.getElementById('headerTitle').textContent=product.name;
+    renderPage();
+  }catch(e){
+    document.getElementById('appBody').innerHTML=`<div class="loading-screen"><div style="font-size:3rem">⚠️</div><div>تعذر تحميل المنتج</div></div>`;
+  }
+}
+
+function renderPage(){
+  const similar=allProducts.filter(p=>p.id!==product.id&&(p.brand||'')===(product.brand||'')).slice(0,6);
+  const fallback=imgs[0];
+
+  document.getElementById('appBody').innerHTML=`
+  <div class="product-page">
+
+    <!-- SLIDER -->
+    <div class="slider-wrap">
+      <div class="slider-track" id="sliderTrack">
+        ${imgs.map((src,i)=>`<img src="${src}" alt="${product.name}" onclick="openLightbox(${i})" onerror="this.src='${fallback}'">`).join('')}
+      </div>
+      ${imgs.length>1?`
+      <button class="slider-btn prev" onclick="slide(-1)">❮</button>
+      <button class="slider-btn next" onclick="slide(1)">❯</button>
+      <div class="slider-dots" id="sliderDots">
+        ${imgs.map((_,i)=>`<div class="dot ${i===0?'active':''}" style="width:${i===0?'20px':'7px'}" onclick="goSlide(${i})"></div>`).join('')}
+      </div>
+      <div class="slider-count" id="sliderCount">1 / ${imgs.length}</div>`:''}
+    </div>
+
+    <!-- THUMBNAILS -->
+    ${imgs.length>1?`<div class="thumbs" id="thumbsRow">
+      ${imgs.map((src,i)=>`<img class="thumb ${i===0?'active':''}" src="${src}" onclick="goSlide(${i})" onerror="this.style.display='none'">`).join('')}
+    </div>`:''}
+
+    <!-- INFO -->
+    <div class="product-info-page">
+      <div class="info-left">
+        <div class="brand-badge">🚗 ${product.brand||'قطعة غيار'} ${product.model?'· '+product.model:''}</div>
+        <h1 class="product-title">${product.name}</h1>
+        ${product.model?`<div class="product-model-tag">الموديل: ${product.model}</div>`:''}
+        ${product.description?`<div class="product-desc">${product.description}</div>`:''}
+        <div class="product-meta">
+          ${product.brand?`<div class="meta-row"><span class="meta-label">الماركة</span><span class="meta-val">${product.brand}</span></div>`:''}
+          ${product.model?`<div class="meta-row"><span class="meta-label">الموديل</span><span class="meta-val">${product.model}</span></div>`:''}
+          ${product.category?`<div class="meta-row"><span class="meta-label">القسم</span><span class="meta-val">${product.category}</span></div>`:''}
+          <div class="meta-row"><span class="meta-label">الحالة</span><span class="meta-val" style="color:var(--green)">✓ متوفر</span></div>
+        </div>
+      </div>
+
+      <div class="info-right">
+        <div class="price-box">
+          ${product.price
+            ?`<div class="price-main">${product.price} ر.س</div><div class="price-note">السعر شامل الضريبة · يُحدد عند التأكيد</div>`
+            :`<div class="price-main" style="font-size:1.2rem;color:var(--text2)">السعر عند الاستفسار</div><div class="price-note">تواصل معنا للحصول على أفضل سعر</div>`
+          }
+          <div class="action-btns">
+            <a class="btn-wa" href="https://wa.me/966576784112?text=${encodeURIComponent('مرحباً، أريد الاستفسار عن '+product.name+' - '+( product.brand||'')+' '+(product.model||''))}" target="_blank">${waSvg} استفسر على واتساب</a>
+            <button class="btn-cart" id="cartBtnPage" onclick="addToCart()">🛒 أضف للسلة</button>
+            <button class="btn-share" onclick="shareProduct()">📤 مشاركة المنتج</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIMILAR -->
+    ${similar.length?`
+    <div class="similar-section">
+      <div class="section-hdr">منتجات مشابهة</div>
+      <div class="similar-grid">
+        ${similar.map(p=>{
+          let si=[];try{si=p.images?JSON.parse(p.images):[];}catch(e){}
+          if(!si.length&&p.image_url)si=[p.image_url];
+          const si0=si[0]||fallback;
+          return `<a class="similar-card" href="product.html?id=${p.id}">
+            <img class="similar-img" src="${si0}" alt="${p.name}" onerror="this.src='${fallback}'">
+            <div class="similar-info">
+              <div class="similar-badge">${p.brand||''} ${p.model?'· '+p.model:''}</div>
+              <div class="similar-name">${p.name}</div>
+              ${p.price?`<div class="similar-price">${p.price} ر.س</div>`:'<div class="similar-price" style="color:var(--text2)">استفسر</div>'}
+            </div>
+          </a>`;
+        }).join('')}
+      </div>
+    </div>`:''}
+
+  </div>
+  <footer>
+    <p>📍 الرياض - مخرج 15 - عند مسجد الراجحي</p>
+    <p style="margin-top:5px">واتساب: <a href="https://wa.me/966576784112">966576784112</a></p>
+    <p style="margin-top:8px;color:#444">© 2025 متجر قطع الغيار</p>
+  </footer>`;
+
+  // check if already in cart
+  if(cart.find(x=>x.cartId==='p'+product.id)){
+    const b=document.getElementById('cartBtnPage');
+    if(b){b.textContent='✓ في السلة';b.classList.add('added');}
+  }
+}
+
+// SLIDER
+function slide(dir){
+  sliderI=(sliderI+dir+imgs.length)%imgs.length;
+  applySlide();
+}
+function goSlide(i){
+  sliderI=i;
+  applySlide();
+}
+function applySlide(){
+  const track=document.getElementById('sliderTrack');
+  if(track) track.style.transform=`translateX(-${sliderI*100}%)`;
+  // dots
+  const dots=document.querySelectorAll('.dot');
+  dots.forEach((d,i)=>{d.classList.toggle('active',i===sliderI);d.style.width=i===sliderI?'20px':'7px';});
+  // thumbs
+  const thumbs=document.querySelectorAll('.thumb');
+  thumbs.forEach((t,i)=>t.classList.toggle('active',i===sliderI));
+  // count
+  const cnt=document.getElementById('sliderCount');
+  if(cnt) cnt.textContent=`${sliderI+1} / ${imgs.length}`;
+}
+
+// LIGHTBOX
+function openLightbox(i){
+  lbI=i;
+  document.getElementById('lbImg').src=imgs[i];
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+function lbSlide(dir){
+  lbI=(lbI+dir+imgs.length)%imgs.length;
+  document.getElementById('lbImg').src=imgs[lbI];
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open'))return;
+  if(e.key==='ArrowLeft') lbSlide(1);
+  if(e.key==='ArrowRight') lbSlide(-1);
+  if(e.key==='Escape') closeLightbox();
+});
+
+// CART
+function addToCart(){
+  if(!currentUser){showToast('سجّل دخولك أولاً 🔒');setTimeout(()=>{location.href='index.html';},1200);return;}
+  if(cart.find(x=>x.cartId==='p'+product.id)){showToast('موجود بالسلة ✓');return;}
+  cart.push({cartId:'p'+product.id,name:product.name,sub:(product.brand||'')+(product.model?' · '+product.model:''),price:product.price||'استفسر'});
+  localStorage.setItem('autoCart',JSON.stringify(cart));
+  const b=document.getElementById('cartBtnPage');
+  if(b){b.textContent='✓ أضيف للسلة';b.classList.add('added');}
+  showToast('أضيف للسلة 🛒');
+}
+
+// SHARE
+function shareProduct(){
+  const url=location.href;
+  if(navigator.share){
+    navigator.share({title:product?.name||'منتج',text:'شوف هذا المنتج',url});
+  } else {
+    navigator.clipboard.writeText(url).then(()=>showToast('تم نسخ الرابط 🔗'));
+  }
+}
+
+// TOAST
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+
+init();
+</script>
+</body>
+</html>
